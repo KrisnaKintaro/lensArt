@@ -17,10 +17,15 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $table = 'user';
+    protected $primaryKey = 'idUser';
     protected $fillable = [
-        'name',
+        'namaLengkap',
         'email',
         'password',
+        'noTelp',
+        'fotoProfil',
+        'role',
     ];
 
     /**
@@ -44,5 +49,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->namaLengkap;
+    }
+
+    public function pemesanan()
+    {
+        return $this->hasMany(Pemesanan::class, 'idUser', 'idUser');
     }
 }
