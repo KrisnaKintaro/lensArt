@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class slotJadwal extends Model
+class SlotJadwal extends Model
 {
     protected $table = 'slotJadwal';
     protected $primaryKey = 'idSlotJadwal';
@@ -17,4 +17,14 @@ class slotJadwal extends Model
         'status',
         'catatan',
     ];
+
+    public function jenisLayanan()
+    {
+        return $this->belongsTo(JenisLayanan::class, 'idJenisLayanan', 'idJenisLayanan');
+    }
+
+    public function paketLayanan()
+    {
+        return $this->belongsTo(PaketLayanan::class, 'idPaketLayanan', 'idPaketLayanan');
+    }
 }
