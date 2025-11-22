@@ -90,8 +90,8 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link {{ Route::is('booking.*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ Route::is('booking.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('booking.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-calendar-check"></i>
                         <p>
                             Kelola Booking
@@ -100,13 +100,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php" class="nav-link {{ Route::is('booking.daftarPemesanan') ? 'active' : '' }}">
+                            <a href="{{ Route('booking.daftarPemesanan') }}" class="nav-link {{ Route::is('booking.daftarPemesanan') ? 'active' : '' }}">
                                 <i class="fas fa-clipboard-list nav-icon"></i>
                                 <p>Daftar Pemesanan</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php" class="nav-link {{ Route::is('booking.validasiPembayaran') ? 'active' : '' }}">
+                            <a href="{{ Route('booking.dataPembayaran') }}" class="nav-link {{ Route::is('booking.dataPembayaran') ? 'active' : '' }}">
                                 <i class="fas fa-file-invoice-dollar nav-icon"></i>
                                 <p>Validasi Pembayaran</p>
                             </a>
