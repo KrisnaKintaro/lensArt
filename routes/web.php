@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\kalenderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PemesananController;
 use App\Http\Controllers\Admin\pembayaranController;
@@ -14,3 +15,9 @@ Route::post('pemesanan/updateStatusPembayaran',[PemesananController::class, 'upd
 
 Route::get('lihatDataPembayaran',[pembayaranController::class, 'index'])->name('booking.dataPembayaran');
 Route::post('pembayaran/updateStatusPembayaran',[pembayaranController::class, 'updateStatusPembayaran'])->name('booking.pembayaran.updateStatusPembayaran');
+
+Route::get('lihatKalenderJadwal',[kalenderController::class, 'index'])->name('kalenderJadwal');
+Route::get('ambilDataPaket',[kalenderController::class, 'getPaket'])->name('kalenderJadwal.ambilDataPaket');
+Route::get('ambilDataSlotJadwal',[kalenderController::class, 'getSlotJadwal'])->name('kalenderJadwal.ambilDataSlotJadwal');
+Route::post('simpanDataBooking',[kalenderController::class, 'simpanBooking'])->name('kalenderJadwal.simpanBooking');
+Route::get('dataPresentaseHarian',[kalenderController::class, 'getDataPresentaseBookingHarian'])->name('kalenderJadwal.getDataPresentaseHarian');
