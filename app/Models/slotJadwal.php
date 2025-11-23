@@ -27,4 +27,9 @@ class SlotJadwal extends Model
     {
         return $this->belongsTo(PaketLayanan::class, 'idPaketLayanan', 'idPaketLayanan');
     }
+
+    public function pemesanan()
+    {
+        return $this->hasOne(Pemesanan::class, 'idSlotJadwal', 'idSlotJadwal');
+    }
 }

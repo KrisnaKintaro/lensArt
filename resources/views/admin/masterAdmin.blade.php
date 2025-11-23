@@ -54,6 +54,8 @@
     </script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('adminLte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    {{-- Moment js  --}}
+    <script src="{{ asset('adminLte/plugins/moment/moment.min.js') }}"></script>
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{ asset('adminLte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <!-- overlayScrollbars -->

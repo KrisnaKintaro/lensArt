@@ -115,7 +115,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="" class="nav-link {{ Route::is('kelolaJadwal') ? 'active' : '' }}">
+                    <a href="{{ route('kalenderJadwal') }}" class="nav-link {{ Route::is('kalenderJadwal') ? 'active' : '' }}">
                         <i class="nav-icon far fa-calendar-alt"></i>
                         <p>
                             Kalender Jadwal Kerja
