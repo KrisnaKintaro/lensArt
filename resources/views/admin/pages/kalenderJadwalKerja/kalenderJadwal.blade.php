@@ -36,6 +36,7 @@
         .slot-booked {
             background-color: #f35968 !important;
             pointer-events: none;
+            color: white !important;
         }
     </style>
 @endsection
