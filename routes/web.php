@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\kalenderController;
+use App\Http\Controllers\Admin\kelolaAkunCustomerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PemesananController;
 use App\Http\Controllers\Admin\pembayaranController;
@@ -21,3 +22,8 @@ Route::get('ambilDataPaket',[kalenderController::class, 'getPaket'])->name('kale
 Route::get('ambilDataSlotJadwal',[kalenderController::class, 'getSlotJadwal'])->name('kalenderJadwal.ambilDataSlotJadwal');
 Route::post('simpanDataBooking',[kalenderController::class, 'simpanBooking'])->name('kalenderJadwal.simpanBooking');
 Route::get('dataPresentaseHarian',[kalenderController::class, 'getDataPresentaseBookingHarian'])->name('kalenderJadwal.getDataPresentaseHarian');
+
+
+Route::get('lihatDataAkunCustomer',[kelolaAkunCustomerController::class, 'index'])->name('kelolaAkunCustomer');
+Route::post('tambahDataCustomer',[kelolaAkunCustomerController::class, 'tambahData'])->name('kelolaAkunCustomer.tambahData');
+Route::get('ambilDataEdit/{idUser}',[kelolaAkunCustomerController::class, 'ambilDataEdit'])->name('kelolaAkunCustomer.ambilDataEdit');
