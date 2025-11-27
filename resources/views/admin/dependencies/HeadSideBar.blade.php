@@ -17,7 +17,7 @@
             <a href="#" class="nav-link">Kontak</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="../logout.php" class="nav-link">
+            <a href="{{ route('logout') }}" class="nav-link">
                 <i class="fas fa-sign-out-alt"></i> LogOut
             </a>
         </li>
@@ -70,7 +70,7 @@
                 <img src="" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">username</a>
+                <a href="#" class="d-block">{{ auth()->user()->namaLengkap }}</a>
             </div>
         </div>
 
