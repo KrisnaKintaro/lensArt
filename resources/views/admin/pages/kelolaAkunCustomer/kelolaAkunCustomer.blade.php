@@ -346,7 +346,7 @@
                     text: "Data yang dihapus gak bisa balik lagi lho!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33', 
+                    confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
                     confirmButtonText: 'Ya, Hapus Aja!',
                     cancelButtonText: 'Batal'

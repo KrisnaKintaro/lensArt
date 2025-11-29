@@ -18,9 +18,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('prosesLogout', [AuthController::class, 'logout'])->name('logout');
+
 // Periksa harus login dulu baru bisa logout
-Route::middleware('auth')->group(function () {
-});
+Route::middleware('auth')->group(function () {});
 
 // route group khusus admin
 Route::middleware(['auth', 'cek_role:admin'])->group(function () {
@@ -38,16 +38,19 @@ Route::middleware(['auth', 'cek_role:admin'])->group(function () {
     Route::post('pemesanan/updateStatusPembayaran', [PemesananController::class, 'updateStatusPembayaran'])->name('booking.pemesanan.updateStatusPembayaran');
 
     // Kalendar booking
-    Route::get('lihatKalenderJadwal',[kalenderController::class, 'index'])->name('kalenderJadwal');
-    Route::get('ambilDataPaket',[kalenderController::class, 'getPaket'])->name('kalenderJadwal.ambilDataPaket');
-    Route::get('ambilDataSlotJadwal',[kalenderController::class, 'getSlotJadwal'])->name('kalenderJadwal.ambilDataSlotJadwal');
-    Route::post('simpanDataBooking',[kalenderController::class, 'simpanBooking'])->name('kalenderJadwal.simpanBooking');
-    Route::get('dataPresentaseHarian',[kalenderController::class, 'getDataPresentaseBookingHarian'])->name('kalenderJadwal.getDataPresentaseHarian');
+    Route::get('lihatKalenderJadwal', [kalenderController::class, 'index'])->name('kalenderJadwal');
+    Route::get('ambilDataPaket', [kalenderController::class, 'getPaket'])->name('kalenderJadwal.ambilDataPaket');
+    Route::get('ambilDataSlotJadwal', [kalenderController::class, 'getSlotJadwal'])->name('kalenderJadwal.ambilDataSlotJadwal');
+    Route::post('simpanDataBooking', [kalenderController::class, 'simpanBooking'])->name('kalenderJadwal.simpanBooking');
+    Route::get('dataPresentaseHarian', [kalenderController::class, 'getDataPresentaseBookingHarian'])->name('kalenderJadwal.getDataPresentaseHarian');
 
+    // Kelola Akun
+    Route::get('lihatDataAkunCustomer', [kelolaAkunCustomerController::class, 'index'])->name('kelolaAkunCustomer');
+    Route::post('tambahDataCustomer', [kelolaAkunCustomerController::class, 'tambahData'])->name('kelolaAkunCustomer.tambahData');
+    Route::get('ambilDataEdit/{idUser}', [kelolaAkunCustomerController::class, 'ambilDataEdit'])->name('kelolaAkunCustomer.ambilDataEdit');
+    Route::post('updateDataUser/{idUser}', [kelolaAkunCustomerController::class, 'editData'])->name('kelolaAkunCustomer.editDataUser');
+    Route::delete('deleteDataUser/{idUser}', [kelolaAkunCustomerController::class, 'hapusData'])->name('kelolaAkunCustomer.hapusData');
 
-    Route::get('lihatDataAkunCustomer',[kelolaAkunCustomerController::class, 'index'])->name('kelolaAkunCustomer');
-    Route::post('tambahDataCustomer',[kelolaAkunCustomerController::class, 'tambahData'])->name('kelolaAkunCustomer.tambahData');
-    Route::get('ambilDataEdit/{idUser}',[kelolaAkunCustomerController::class, 'ambilDataEdit'])->name('kelolaAkunCustomer.ambilDataEdit');
     // Pembayaran
     Route::get('lihatDataPembayaran', [pembayaranController::class, 'index'])->name('booking.dataPembayaran');
     Route::post('pembayaran/updateStatusPembayaran', [pembayaranController::class, 'updateStatusPembayaran'])->name('booking.pembayaran.updateStatusPembayaran');
