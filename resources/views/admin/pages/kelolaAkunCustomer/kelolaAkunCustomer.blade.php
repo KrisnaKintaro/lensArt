@@ -1,5 +1,5 @@
 @extends('admin.masterAdmin')
-@section('title', 'Kelola Data Customer')
+@section('title', 'Kelola Data AKun')
 
 @section('content')
     <section class="content">
@@ -8,10 +8,10 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Customer Terdaftar</h3>
+                            <h3 class="card-title">Data Akun Terdaftar</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-primary btn-sm btn-add">
-                                    <i class="fas fa-plus"></i> Tambah Customer
+                                    <i class="fas fa-plus"></i> Tambah Akun
                                 </button>
                             </div>
                         </div>
@@ -132,7 +132,8 @@
                                     <label>Foto Profil</label>
                                     <input type="file" name="fotoProfil" id="fotoProfil" class="form-control-file">
                                     <small class="text-muted">Format: jpg, png, jpeg, ukuran maksimal 2Mb</small><br>
-                                    <small class="text-muted" id="fotoProfil-hint" style="display: none;">Kosongkan jika tidak ingin dirubah</small>
+                                    <small class="text-muted" id="fotoProfil-hint" style="display: none;">Kosongkan jika
+                                        tidak ingin dirubah</small>
                                     <div class="mt-2">
                                         <img id="preview-foto" src="" alt="Preview Image" class="img-circle"
                                             style="display: none; width: 100px; height: 100px; object-fit: cover; border: 2px solid #ccc;">
@@ -184,43 +185,27 @@
                 "buttons": ["csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#tabelCustomer_wrapper .col-md-6:eq(0)');
 
-            // Alur tambah data baru
-            $('.btn-add').on('click', function() {
-                $('#form-customer')[0].reset();
-
-                $('#preview-foto').attr('src', '').hide();
-
-                $('.modal-header').removeClass('bg-warning bg-danger');
-                $('.modal-header').addClass('bg-primary');
-                $('.modal-title').css('color', '#fff');
-                $('.close').css('color', '#fff');
-                $('.btn-type-submit').removeClass('bg-warning bg-danger');
-                $('.btn-type-submit').addClass('bg-primary');
-                $('.btn-type-submit').css('color', '#fff');
-                $('.btn-type-submit').text('Tambah');
-
-                $('#modal-title').html('<i class="fas fa-plus"></i> Tambah Customer Baru');
-
-                $('#_method').val('POST')
-                $('#password').attr('required', true);
-                $('#password-hint').hide();
-
-                $('#modal-form-customer').modal('show');
-            });
-
+            let saveMethod;
+            let idUser;
             $('#form-customer').on('submit', function(e) {
                 e.preventDefault();
 
-                let data = new FormData(this);
-                for (var pair of data.entries()) {
-                    console.log(pair[0] + ', ' + pair[1]);
+                let url;
+                if (saveMethod === 'add') {
+                    url = "{{ route('kelolaAkunCustomer.tambahData') }}";
+                } else if (saveMethod === 'edit') {
+                    url = "{{ route('kelolaAkunCustomer.editDataUser', ':id') }}";
+                    url = url.replace(':id', idUser);
                 }
+
+                let formData = new FormData(this);
+
                 $.ajax({
-                    url: "{{ route('kelolaAkunCustomer.tambahData') }}",
+                    url: url,
                     type: "POST",
-                    data: data,
-                    contentType: false, // Wajib buat upload file
-                    processData: false, // Wajib buat upload file
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function(response) {
                         $('#modal-form-customer').modal('hide');
                         Toast.fire({
@@ -262,9 +247,38 @@
                 });
             });
 
+            // Alur tambah data baru
+            $('.btn-add').on('click', function() {
+                saveMethod = 'add';
+
+                $('#form-customer')[0].reset();
+
+                $('#preview-foto').attr('src', '').hide();
+
+                $('.modal-header').removeClass('bg-warning bg-danger');
+                $('.modal-header').addClass('bg-primary');
+                $('.modal-title').css('color', '#fff');
+                $('.close').css('color', '#fff');
+                $('.btn-type-submit').removeClass('bg-warning bg-danger');
+                $('.btn-type-submit').addClass('bg-primary');
+                $('.btn-type-submit').css('color', '#fff');
+                $('.btn-type-submit').text('Tambah');
+
+                $('#modal-title').html('<i class="fas fa-plus"></i> Tambah Customer Baru');
+
+                $('#_method').val('POST')
+                $('#password').attr('required', true);
+                $('#password-hint').hide();
+
+                $('#modal-form-customer').modal('show');
+            });
+
             // Alur edit data
             // pake 'body' on click biar aman kalau datatable di-page 2 dst
             $('body').on('click', '.btn-edit', function() {
+                saveMethod = 'edit';
+                idUser = $(this).data('id');
+
                 $('#form-customer')[0].reset();
 
                 $('.modal-header').removeClass('bg-primary bg-danger');
@@ -278,7 +292,6 @@
 
                 $('.modal-title').html('<i class="fas fa-edit"></i> Edit Data Customer');
                 Swal.showLoading();
-                let idUser = $(this).data('id');
 
                 // Suruh laravel buat link pake id palsu, kemuddian rubah isinya
                 let url = "{{ route('kelolaAkunCustomer.ambilDataEdit', 'idUser') }}";
@@ -291,10 +304,11 @@
                         Swal.close();
 
                         let urlFoto = "";
-                        if(response.fotoProfil){
+                        if (response.fotoProfil) {
                             urlFoto = "{{ asset('gambarProfilAkun') }}/" + response.fotoProfil;
-                        }else{
-                            urlFoto = "https://ui-avatars.com/api/?name=" + encodeURIComponent(response.namaLengkap);
+                        } else {
+                            urlFoto = "https://ui-avatars.com/api/?name=" + encodeURIComponent(
+                                response.namaLengkap);
                         };
                         $('#preview-foto').attr('src', urlFoto).show();
 
@@ -324,21 +338,50 @@
             });
 
             // ALur hapus data
-            $('.btn-delete').on('click', function() {
-                $('#form-customer')[0].reset();
+            $('body').on('click', '.btn-delete', function() {
+                let idUser = $(this).data('id');
 
-                $('.modal-header').removeClass('bg-primary bg-warning');
-                $('.modal-header').addClass('bg-danger');
-                $('.modal-title').css('color', '#fff');
-                $('.close').css('color', '#fff');
-                $('.btn-type-submit').removeClass('bg-primary bg-warning');
-                $('.btn-type-submit').addClass('bg-danger');
-                $('.btn-type-submit').css('color', '#fff');
-                $('.btn-type-submit').text('Hapus');
+                Swal.fire({
+                    title: 'Yakin mau hapus?',
+                    text: "Data yang dihapus gak bisa balik lagi lho!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus Aja!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let url = "{{ route('kelolaAkunCustomer.hapusData', 'idUser') }}";
+                        url = url.replace('idUser', idUser);
 
-                $('.modal-title').html('<i class="fas fa-trash"></i> Hapus Data Customer');
-                $('#modal-form-customer').modal('show');
-            })
+                        $.ajax({
+                            url: url,
+                            type: "DELETE",
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                Swal.fire(
+                                    'Terhapus!',
+                                    'Data customer berhasil dihapus.',
+                                    'success'
+                                )
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            },
+                            error: function(xhr) {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menghapus data.',
+                                    'error'
+                                )
+                            }
+                        });
+                    }
+                })
+            });
         });
     </script>
 @endsection
