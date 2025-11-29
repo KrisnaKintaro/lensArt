@@ -24,6 +24,20 @@ Route::post('simpanDataBooking',[kalenderController::class, 'simpanBooking'])->n
 Route::get('dataPresentaseHarian',[kalenderController::class, 'getDataPresentaseBookingHarian'])->name('kalenderJadwal.getDataPresentaseHarian');
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 Route::get('lihatDataAkunCustomer',[kelolaAkunCustomerController::class, 'index'])->name('kelolaAkunCustomer');
 Route::post('tambahDataCustomer',[kelolaAkunCustomerController::class, 'tambahData'])->name('kelolaAkunCustomer.tambahData');
 Route::get('ambilDataEdit/{idUser}',[kelolaAkunCustomerController::class, 'ambilDataEdit'])->name('kelolaAkunCustomer.ambilDataEdit');
+Route::post('updateDataUser/{idUser}',[kelolaAkunCustomerController::class, 'editData'])->name('kelolaAkunCustomer.editDataUser');
+Route::delete('deleteDataUser/{idUser}',[kelolaAkunCustomerController::class, 'hapusData'])->name('kelolaAkunCustomer.hapusData');
