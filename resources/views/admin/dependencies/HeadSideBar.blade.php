@@ -181,7 +181,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="pages/customers.php" class="nav-link {{ Route::is('kelolaAkunCustomer.*') ? 'active' : '' }}">
+                    <a href="{{ route('kelolaAkunCustomer') }}" class="nav-link {{ Route::is('kelolaAkunCustomer.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users-cog"></i>
                         <p>
                             Kelola Akun Customer
