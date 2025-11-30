@@ -55,3 +55,8 @@ Route::middleware(['auth', 'cek_role:admin'])->group(function () {
     Route::get('lihatDataPembayaran', [pembayaranController::class, 'index'])->name('booking.dataPembayaran');
     Route::post('pembayaran/updateStatusPembayaran', [pembayaranController::class, 'updateStatusPembayaran'])->name('booking.pembayaran.updateStatusPembayaran');
 });
+
+// route group khusus customer 
+Route::middleware(['auth','cek_role:admin'])->group(function(){
+
+});
