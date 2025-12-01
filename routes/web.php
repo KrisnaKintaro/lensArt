@@ -6,13 +6,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PemesananController;
 use App\Http\Controllers\Admin\pembayaranController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\customer\dashboard_awal_controller;
 
 // route bebas tanpa login
 Route::middleware('guest')->group(function () {
 
-    Route::get('/', function () {
-        return view('login');
-    })->name('login');
+    Route::get('/', [dashboard_awal_controller::class,'tampilan_opening'])->name('tampilan_opening'); 
 
     Route::post('prosesLogin', [AuthController::class, 'prosesLogin'])->name('prosesLogin');
 });
