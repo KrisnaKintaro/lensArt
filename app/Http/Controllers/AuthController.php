@@ -14,7 +14,7 @@ class AuthController extends Controller
      */
     public function tampilkanFormLogin()
     {
-        return view('login'); 
+        return view('login');
     }
 
     /**
@@ -22,7 +22,7 @@ class AuthController extends Controller
      */
     public function tampilkanFormRegister()
     {
-        return view('register'); 
+        return view('register');
     }
 
     /**
@@ -33,25 +33,24 @@ class AuthController extends Controller
         // 1. Validasi Data
         $request->validate([
             'name' => 'required|string|max:255',
-            'noTelp' => 'required|string|max:15', 
-            'email' => 'required|string|email|max:255|unique:user,email', 
+            'noTelp' => 'required|string|max:15',
+            'email' => 'required|string|email|max:255|unique:user,email',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         // 2. Buat Pengguna Baru
         try {
             User::create([
-                'namaLengkap' => $request->name, 
+                'namaLengkap' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => 'customer', 
-                'noTelp' => $request->noTelp, 
-                'fotoProfil' => null, 
+                'role' => 'customer',
+                'noTelp' => $request->noTelp,
+                'fotoProfil' => null,
             ]);
 
             // 3. Redirect ke halaman depan (/) setelah register
             return redirect('/')->with('success', 'Pendaftaran berhasil! Silakan Login dengan akun baru Anda.');
-            
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->withErrors(['register' => 'Pendaftaran gagal karena masalah server atau kolom wajib database.']);
         }
@@ -68,37 +67,40 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Tentukan login type (email atau namaLengkap)
         $loginType = filter_var($request->identity, FILTER_VALIDATE_EMAIL) ? 'email' : 'namaLengkap';
 
         $credentials = [
             $loginType => $request->identity,
             'password' => $request->password
         ];
-        
-        // Coba login
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             $user = Auth::user();
 
-            // Tentukan default redirect: Admin ke kalender, Customer ke tampilan_opening (HOME)
-            $defaultRedirect = $user->role === 'admin'
-                ? route('kalenderJadwal')
-                : route('tampilan_opening'); // <-- UBAH KE TAMPILAN OPENING
+            // 1. Ambil role dan pastikan huruf kecil & bersih dari spasi
+            // Sesuai dengan enum database lu: 'customer' atau 'admin'
+            $role = strtolower(trim($user->role));
 
-            // Gunakan intended() untuk mengarahkan ke URL yang dilindungi (seperti /booking/create) jika ada.
-            // Jika tidak ada URL yang dituju, gunakan defaultRedirect.
-            $redirectUrl = redirect()->intended($defaultRedirect)->getTargetUrl();
+            // 2. Default Redirect (Jaga-jaga kalau role gak kebaca)
+            $redirectTarget = '/';
 
+            // 3. Logic Redirect
+            if ($role === 'admin') {
+                $redirectTarget = route('kalenderJadwal');
+            } elseif ($role === 'customer') {
+                // INI TARGET CUSTOMER -> Langsung ke Form Booking
+                $redirectTarget = route('tampilanBookingCustomer');
+            }
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Selamat datang, ' . $user->namaLengkap,
-                'redirect_url' => $redirectUrl // Kirimkan URL intended atau default
+                'role' => $role, // Kirim role yang udah dibersihkan
+                'redirect_url' => $redirectTarget
             ]);
         }
-        
-        // Response jika login gagal
+
         return response()->json([
             'errors' => [
                 'identity' => ['Email/Nama atau Password salah, Coba lagi bro!']

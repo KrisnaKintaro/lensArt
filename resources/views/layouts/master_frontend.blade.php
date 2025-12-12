@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,9 @@
     <style>
         /* ... Gaya CSS Anda tetap sama ... */
         * {
-            margin: 0; padding: 0; box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
@@ -28,30 +31,34 @@
         /* NAVBAR */
         .navbar {
             background-color: rgba(0, 0, 0, 0.2) !important;
-            z-index: 1050; 
+            z-index: 1050;
         }
 
         .brand-area {
-            display: flex; align-items: center;
+            display: flex;
+            align-items: center;
         }
 
         .brand-area img {
-            width: 40px; margin-right: 15px;
+            width: 40px;
+            margin-right: 15px;
         }
 
         .brand-text {
-            font-size: 24px; font-weight: bold;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         /* BOOKING BUTTON */
         .btn-booking {
-            background-color: white; 
-            color: black; 
+            background-color: white;
+            color: black;
             border: 1px solid white;
             padding: 5px 15px;
             font-weight: bold;
             transition: 0.3s ease;
         }
+
         .btn-booking:hover {
             background-color: #f0f0f0;
             color: #333;
@@ -78,7 +85,8 @@
         }
 
         .gallery-item img {
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
@@ -88,17 +96,40 @@
         }
 
         /* GRID POSITIONS */
-        .item-1 { grid-row: 1 / span 2; }
-        .item-2 { grid-column: 2 / span 2; }
-        .item-4 { grid-row: 2 / 3; grid-column: 2 / 3; }
-        .item-5 { grid-row: 2 / 3; grid-column: 3 / 4; }
-        .item-kiri-bawah-1 { grid-row: 3 / 4; grid-column: 1 / 2; }
-        .item-tengah-bawah-2 { grid-row: 3 / 4; grid-column: 2 / 3; }
+        .item-1 {
+            grid-row: 1 / span 2;
+        }
+
+        .item-2 {
+            grid-column: 2 / span 2;
+        }
+
+        .item-4 {
+            grid-row: 2 / 3;
+            grid-column: 2 / 3;
+        }
+
+        .item-5 {
+            grid-row: 2 / 3;
+            grid-column: 3 / 4;
+        }
+
+        .item-kiri-bawah-1 {
+            grid-row: 3 / 4;
+            grid-column: 1 / 2;
+        }
+
+        .item-tengah-bawah-2 {
+            grid-row: 3 / 4;
+            grid-column: 2 / 3;
+        }
 
         .item-6 {
             grid-row: 3 / 4;
             grid-column: 3 / 4;
-            display: flex; justify-content: center; align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .item-6 .signature {
@@ -106,14 +137,18 @@
             font-size: 40px;
             color: black;
             background: white;
-            width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         /* NAVIGASI GALLERY */
         .gallery-nav-button {
             position: fixed;
-            top: 50%; transform: translateY(-50%);
+            top: 50%;
+            transform: translateY(-50%);
             background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
@@ -128,8 +163,15 @@
             background: rgba(0, 0, 0, 0.8);
         }
 
-        .nav-left { left: 0; border-radius: 0 5px 5px 0; }
-        .nav-right { right: 0; border-radius: 5px 0 0 5px; }
+        .nav-left {
+            left: 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .nav-right {
+            right: 0;
+            border-radius: 5px 0 0 5px;
+        }
     </style>
 
     @yield('styles')
@@ -144,51 +186,68 @@
             <a class="navbar-brand brand-area" href="{{ route('tampilan_opening') }}">
                 <img src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="Lensart Logo">
                 <div class="brand-text"></div>
-            </a> 
+            </a>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    
+
                     <li class="nav-item">
                         <a class="nav-link text-white-50" href="{{ route('layanan.index') }}">Lihat Layanan</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50" href="{{ route('portofolio.event') }}">Lihat Portofolio</a>
+                    </li>
 
                     <li class="nav-item mx-2">
-                        <a class="btn btn-warning booking-button rounded-pill" 
-                           href="{{ route('layanan.index') }}">
+                        <a class="btn btn-warning booking-button rounded-pill"
+                            href="{{ route('layanan.index') }}">
                             Booking Sekarang
                         </a>
                     </li>
+                    @auth
+                    @if(Auth::user()->role == 'customer')
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50" href="">Riwayat Booking</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50" href="">Verifikasi Pembayaran</a>
+                    </li>
+                    @endif
+                    @endauth
 
                     @guest
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{{ route('login') }}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{{ route('register') }}">Register</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('register') }}">Register</a>
+                    </li>
                     @endguest
 
                     @auth
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->namaLengkap ?? 'Akun' }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
-                                <li><a class="dropdown-item" href="{{ route('customer.profil') }}">Profil Saya</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                                        <i class="fas fa-sign-out-alt me-1"></i> Logout
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->namaLengkap ?? 'Akun' }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ route('customer.profil') }}">Profil Saya</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}">
+                                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     @endauth
 
                 </ul>
-            </div> </div> </nav> <main>
+            </div>
+        </div>
+    </nav>
+    <main>
         @yield('content')
     </main>
 
@@ -200,4 +259,5 @@
     @yield('scripts')
 
 </body>
+
 </html>

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PemesananController;
 use App\Http\Controllers\Admin\pembayaranController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Customer\bookingController;
 use App\Http\Controllers\customer\dashboard_awal_controller;
 use App\Http\Controllers\Customer\dashboardAwalController;
 use App\Http\Controllers\PortofolioController;
@@ -15,51 +16,25 @@ use App\Http\Controllers\Customer\JenisLayananController;
 // ------------------------------------------
 // ROUTE BEBAS AKSES (TIDAK PERLU LOGIN)
 // ------------------------------------------
-Route::middleware('guest')->group(function () {
+Route::get('/', [dashboardAwalController::class, 'tampilan_opening'])->name('tampilan_opening');
+// Halaman Portofolio
+Route::get('/portofolio/event', [dashboardAwalController::class, 'tampilPortofolio'])->name('portofolio.event');
+Route::get('/portofolio/filter/{id}', [dashboardAwalController::class, 'filter'])->name('filterPorto');
 
-    // Halaman Landing Page (Opening)
-    Route::get('/', [dashboardAwalController::class,'tampilan_opening'])->name('tampilan_opening'); 
+// Layanan
+Route::get('/layanan', [JenisLayananController::class, 'index'])->name('layanan.index');
 
-    // Halaman Portofolio
-    Route::get('/portofolio/event', [dashboardAwalController::class, 'tampilPortofolio'])->name('portofolio.event'); 
-    Route::get('/portofolio/filter/{id}', [dashboardAwalController::class, 'filter'])->name('filterPorto');
+// Route Autentikasi (GET)
+Route::get('/login', [AuthController::class, 'tampilkanFormLogin'])->name('login');
+Route::get('/register', [AuthController::class, 'tampilkanFormRegister'])->name('register');
 
-    // Layanan
-    Route::get('/layanan', [JenisLayananController::class, 'index'])->name('layanan.index');
+// Route Autentikasi (POST)
+Route::post('prosesLogin', [AuthController::class, 'prosesLogin'])->name('prosesLogin');
 
-    // Route Autentikasi (GET)
-    Route::get('/login', [AuthController::class, 'tampilkanFormLogin'])->name('login'); 
-    Route::get('/register', [AuthController::class, 'tampilkanFormRegister'])->name('register'); 
-    
-    // Route Autentikasi (POST)
-    Route::post('prosesLogin', [AuthController::class, 'prosesLogin'])->name('prosesLogin');
-    
-    // ** ROUTE PROSES SUBMIT REGISTER **
-    Route::post('/register', [AuthController::class, 'prosesRegister'])->name('register.post');
+// ** ROUTE PROSES SUBMIT REGISTER **
+Route::post('/register', [AuthController::class, 'prosesRegister'])->name('register.post');
 
-    // --- CATATAN: ROUTE /dashboard YANG TERDUPLIKASI TELAH DIHAPUS DARI SINI ---
-});
-
-
-// Route Logout (Perlu Autentikasi)
 Route::get('prosesLogout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
-
-// ------------------------------------------
-// ROUTE BERSAMA (Perlu Login untuk Booking & Dashboard)
-// ------------------------------------------
-Route::middleware('auth')->group(function () {
-    
-    // Dashboard Customer (DIPASTIKAN HANYA ADA DI SINI)
-    // Ini adalah tujuan redirect setelah Login/Register
-    Route::get('/dashboard', [dashboardAwalController::class, 'index'])->name('dashboard');
-    
-    // **ROUTE BOOKING**
-    Route::get('/booking/create', [PortofolioController::class, 'createBooking'])->name('booking.create'); 
-    Route::post('/booking', [PortofolioController::class, 'storeBooking'])->name('booking.store');
-    
-    
-});
-
 
 // ROUTE KHUSUS ADMIN
 // ------------------------------------------
@@ -93,13 +68,18 @@ Route::middleware(['auth', 'cek_role:admin'])->group(function () {
 // ------------------------------------------
 // ROUTE KHUSUS CUSTOMER
 // ------------------------------------------
-Route::middleware(['auth','cek_role:customer'])->group(function(){
-    
+Route::middleware(['auth', 'cek_role:customer'])->group(function () {
+
     // Contoh Route Khusus Customer
-    Route::get('/customer/profil', function() {
+    Route::get('/customer/profil', function () {
         return view('customer.profil');
     })->name('customer.profil');
-    
-    // Route untuk melihat riwayat booking
-    Route::get('/customer/riwayat-booking', [PortofolioController::class, 'riwayatBooking'])->name('customer.riwayatBooking');
+
+    Route::get('tampilanBookingCustomer',[bookingController::class, 'index'])->name('tampilanBookingCustomer');
+
+    Route::get('ambilDataPaketVersiCustomer', [bookingController::class, 'getPaket'])->name('bookingCustomer.ambilDataPaket');
+    Route::get('ambilDataSlotJadwalVersiCustomer', [bookingController::class, 'getSlotJadwal'])->name('bookingCustomer.ambilDataSlotJadwal');
+    Route::post('simpanDataBookingVersiCustomer', [bookingController::class, 'simpanBooking'])->name('bookingCustomer.simpanBooking');
+    Route::get('dataPresentaseHarianVersiCustomer', [bookingController::class, 'getDataPresentaseBookingHarian'])->name('bookingCustomer.getDataPresentaseHarian');
+
 });
