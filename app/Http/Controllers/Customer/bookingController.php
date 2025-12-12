@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\pemesanan;
+use App\Models\Pembayaran;
 use App\Models\SlotJadwal;
 use App\Models\jenisLayanan;
 use App\Models\PaketLayanan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class bookingController extends Controller
@@ -137,7 +139,19 @@ class bookingController extends Controller
     {
         try {
             DB::beginTransaction();
+            $gambarBukti = null;
+            if ($request->metodePembayaran != 'tunai') {
 
+                if (!$request->hasFile('buktiPembayaran')) {
+                    return response()->json(['message' => 'Bukti pembayaran wajib diupload untuk non-tunai!'], 400);
+                }
+
+                $file = $request->file('buktiPembayaran');
+                $filename = 'bukti_' . time() . '_' . rand(100, 999) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('gambarBuktiPembayaran'), $filename);
+
+                $gambarBukti = $filename;
+            }
             $slot = SlotJadwal::create([
                 'idJenisLayanan' => $request->idJenisLayanan,
                 'idPaketLayanan' => $request->idPaketLayanan,
@@ -149,25 +163,37 @@ class bookingController extends Controller
             ]);
 
             $noBooking = 'BOOK-' . date('Ymd') . rand(100, 999);
-            pemesanan::create([
-                // 'idUser' => Auth::user()->idUser,
-                'idUser' => 1,
+            $pemesananBaru = pemesanan::create([
+                'idUser' => Auth::user()->idUser,
                 'idSlotJadwal' => $slot->idSlotJadwal,
                 'tanggalPemesanan' => now(),
                 'lokasiAcara' => $request->lokasiAcara,
                 'catatan' => $request->catatan,
                 'statusPemesanan' => 'pending',
-                'statusPembayaran' => 'menunggu',
+                'metodePembayaran' => $request->metodePembayaran,
+                'statusPembayaran' => $request->statusPembayaran,
+                'buktiPembayaran' => $gambarBukti,
                 'totalHarga' => $request->totalHarga,
                 'nomorBooking' => $noBooking
+            ]);
+
+            Pembayaran::create([
+                'idPemesanan'       => $pemesananBaru->idPemesanan,
+                'jumlahBayar'       => $request->totalHarga,
+                'metodePembayaran'  => $request->metodePembayaran,
+                'statusPembayaran'  => 'menunggu',
+                'buktiPembayaran'   => $gambarBukti,
+                'tanggalPembayaran' => now(),
             ]);
 
             DB::commit();
             return response()->json(['message' => 'Booking berhasil disimpan!']);
         } catch (\Exception $e) {
             DB::rollBack();
+            if (isset($filename) && file_exists(public_path('gambarBuktiPembayaran/' . $filename))) {
+                unlink(public_path('gambarBuktiPembayaran/' . $filename));
+            }
             return response()->json(['message' => 'Gagal simpan: ' . $e->getMessage()], 500);
         }
     }
 }
-
