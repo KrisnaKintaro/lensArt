@@ -1,15 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
- <h1>Tampilan customer</h1>
- <h3>Halo {{ auth()->user()->namaLengkap }}</h3>
- <a href="{{ route('logout') }}">
-    <button>Logout</button>
- </a>
-</body>
-</html>
+
+@extends('layouts.master_frontend')
+
+@section('title', 'Dashboard Customer')
+
+@section('content')
+
+<div class="container py-5">
+    {{-- TAMBAHKAN CEK AUTH INI AGAR TIDAK ERROR --}}
+    @if(Auth::check())
+        <h1 class="text-white">Selamat Datang, {{ Auth::user()->namaLengkap }}!</h1>
+        {{-- ... konten dashboard lainnya ... --}}
+    @else
+        <p>Anda belum login.</p>
+    @endif
+</div>
+
+@endsection
