@@ -1,51 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lensart Photography</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Mr+De+Haviland&display=swap" rel="stylesheet">
-    
+@extends('layouts.master_frontend')
+
+@section('title', 'Tampilan Opening')
+
+@section('styles')
     <style>
-        /* Reset dan Pengaturan Dasar */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Gaya dari HTML Asli Anda */
         body {
-            /* Warna latar belakang gelap */
-            background-color: #2c2928; 
-            color: white; 
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative; 
-        }
-
-        /* Header (MacBook Air - 1) */
-        .header-note {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 14px;
-            opacity: 0.7; 
+            /* Menonaktifkan padding-bottom dari master_frontend */
+            padding-bottom: 0 !important;
         }
 
         /* Kontainer Utama */
-        .container {
+        .splash-container { /* Ganti nama class agar tidak konflik */
             text-align: center;
             flex-grow: 1; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transform: translateY(-20px); 
+            /* Karena ada navbar, kita bisa sesuaikan margin top */
+            min-height: calc(100vh - 80px); /* Adjusting for navbar height */
         }
 
         /* Area Logo */
@@ -55,7 +29,7 @@
 
         /* Styling untuk Gambar Logo */
         .logo-area img {
-            width: 100px; /* Atur lebar sesuai keinginan Anda */
+            width: 100px; 
             height: auto;
             max-width: 100%;
         }
@@ -73,23 +47,25 @@
 
         /* Footer (Copyright) */
         .footer-note {
-            position: absolute;
-            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
             font-size: 14px;
             letter-spacing: 0.5px;
             opacity: 0.8;
+            background-color: transparent;
         }
     </style>
-</head>
-<body>
-    
-    <div class="header-note">MacBook Air - 1</div>
-    
-    <div class="container">
+@endsection
+
+@section('content')
+
+    <div class="splash-container">
         <div class="logo-area">
-            {{-- Bagian INI yang diubah menggunakan helper asset() --}}
-            <img src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="Logo Lensart Photography">
-            {{-- Pastikan nama file logo Anda adalah 'logo.png' (atau sesuaikan ekstensi) --}}
+            {{-- Mengarahkan ke Portofolio saat diklik --}}
+            <a href="{{ route('portofolio.event') }}"> 
+                <img src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="Logo Lensart Photography">
+            </a>
         </div>
         <p class="tagline" id="lensart-tagline">Lensart Photography</p>
     </div>
@@ -98,6 +74,9 @@
         Copyright @Lensart_Photography
     </div>
 
+@endsection
+
+@section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const taglineElement = document.getElementById('lensart-tagline');
@@ -108,5 +87,4 @@
             }, 500);
         });
     </script>
-</body>
-</html>
+@endsection

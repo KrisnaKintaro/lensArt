@@ -8,6 +8,9 @@ class Portofolio extends Model
 {
     protected $table = 'portofolio';
     protected $primaryKey = 'idPortofolio';
+    protected $casts = [
+        'tanggalPorto' => 'date',
+    ];
     protected $fillable = [
         'idJenisLayanan',
         'namaPortofolio',
