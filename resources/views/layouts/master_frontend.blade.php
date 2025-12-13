@@ -4,16 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lensart Photography | @yield('title', 'Portofolio')</title>
+    {{-- Menggunakan @yield('title') untuk judul halaman --}}
+    <title>Lensart Photography | @yield('title', 'Beranda')</title>
 
+    {{-- Bootstrap CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    
+    {{-- Font Khusus --}}
     <link href="https://fonts.googleapis.com/css2?family=Mr+De+Haviland&display=swap" rel="stylesheet">
-
+    
+    {{-- Font Awesome Icons --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <style>
-        /* ... Gaya CSS Anda tetap sama ... */
+        /* BASE & THEME */
         * {
             margin: 0;
             padding: 0;
@@ -21,16 +25,21 @@
         }
 
         body {
-            background-image: linear-gradient(to bottom, #000000, #33312b);
+            /* Mengubah background hitam ke abu-abu gelap agar teks putih lebih kontras */
+            background-image: linear-gradient(to bottom, #000000, #1a1a1a);
             color: white;
             font-family: Arial, sans-serif;
             min-height: 100vh;
-            padding-bottom: 50px;
+            padding-top: 70px; /* Tambahan padding atas agar konten tidak tertutup navbar fixed */
         }
 
         /* NAVBAR */
         .navbar {
-            background-color: rgba(0, 0, 0, 0.2) !important;
+            background-color: rgba(0, 0, 0, 0.8) !important; /* Dibuat lebih solid */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: fixed; /* Dijadikan fixed agar tetap di atas */
+            top: 0;
+            width: 100%;
             z-index: 1050;
         }
 
@@ -41,36 +50,62 @@
 
         .brand-area img {
             width: 40px;
-            margin-right: 15px;
+            margin-right: 10px;
         }
 
         .brand-text {
             font-size: 24px;
             font-weight: bold;
+            color: white;
+        }
+        
+        /* Navigasi */
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: color 0.3s;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: white !important;
         }
 
         /* BOOKING BUTTON */
-        .btn-booking {
-            background-color: white;
-            color: black;
-            border: 1px solid white;
+        .booking-button {
+            background-color: #ffc107; /* Warna kuning warning Bootstrap */
+            color: #000;
+            border: none;
             padding: 5px 15px;
             font-weight: bold;
-            transition: 0.3s ease;
+            transition: background-color 0.3s ease;
         }
 
-        .btn-booking:hover {
-            background-color: #f0f0f0;
-            color: #333;
+        .booking-button:hover {
+            background-color: #e0a800;
         }
 
-        /* GALLERY GRID DEFAULT (bisa dioverride di halaman anak) */
+        /* Container konten utama */
         .content-container {
             width: 95%;
             max-width: 1200px;
             margin: 30px auto;
         }
 
+        /* DROPDOWN MENU */
+        .dropdown-menu-dark {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+        }
+        
+        .dropdown-menu-dark .dropdown-item {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .dropdown-menu-dark .dropdown-item:hover {
+            background-color: #333;
+            color: white;
+        }
+        /* Style untuk gallery grid tetap dipertahankan */
+        /* ... Gaya CSS gallery grid ... */
         .gallery-grid {
             display: grid;
             grid-template-columns: 1fr 1.5fr 1fr;
@@ -185,55 +220,70 @@
 
             <a class="navbar-brand brand-area" href="{{ route('tampilan_opening') }}">
                 <img src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="Lensart Logo">
-                <div class="brand-text"></div>
+                <div class="brand-text">LENSART</div> {{-- Tambahkan nama brand biar kebaca --}}
             </a>
 
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
+                <ul class="navbar-nav ms-auto align-items-lg-center"> {{-- ms-auto untuk kanan, align-items-lg-center biar tombol rata tengah --}}
 
                     <li class="nav-item">
-                        <a class="nav-link text-white-50" href="{{ route('layanan.index') }}">Lihat Layanan</a>
+                        <a class="nav-link" href="{{ route('layanan.index') }}">Layanan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white-50" href="{{ route('portofolio.event') }}">Lihat Portofolio</a>
+                        <a class="nav-link" href="{{ route('portofolio.event') }}">Portofolio</a>
                     </li>
 
-                    <li class="nav-item mx-2">
-                        <a class="btn btn-warning booking-button rounded-pill"
-                            href="{{ route('layanan.index') }}">
-                            Booking Sekarang
-                        </a>
-                    </li>
+                    {{-- MENU KHUSUS CUSTOMER (DIBENAHI) --}}
                     @auth
                     @if(Auth::user()->role == 'customer')
-                    <li class="nav-item">
-                        <a class="nav-link text-white-50" href="">Riwayat Booking</a>
+                    <li class="nav-item mx-lg-2">
+                        <a class="nav-link text-info fw-bold" href="{{ route('customer.riwayat.booking') }}">
+                            <i class="fas fa-camera me-1"></i> Riwayat Booking
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white-50" href="">Verifikasi Pembayaran</a>
+                    <li class="nav-item mx-lg-2">
+                        <a class="nav-link text-success fw-bold" href="{{ route('customer.riwayat.pembayaran') }}">
+                            <i class="fas fa-check-circle me-1"></i> Verifikasi Pembayaran
+                        </a>
                     </li>
                     @endif
                     @endauth
+                    
+                    {{-- TOMBOL BOOKING (Ditaruh di tengah/kiri navbar untuk visibilitas) --}}
+                    <li class="nav-item mx-2 order-lg-last"> {{-- order-lg-last agar tombol Booking muncul paling kanan di desktop --}}
+                        <a class="btn btn-warning booking-button rounded-pill" href="{{ route('layanan.index') }}">
+                            Booking Sekarang
+                        </a>
+                    </li>
 
+                    {{-- AUTH STATUS (Login/Register/Akun) --}}
                     @guest
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('login') }}">Login</a>
+                        <a class="nav-link" href="{{ route('login') }}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('register') }}">Register</a>
+                        <a class="nav-link" href="{{ route('register') }}">Register</a>
                     </li>
                     @endguest
 
                     @auth
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link dropdown-toggle text-white fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->namaLengkap ?? 'Akun' }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ route('customer.profil') }}">Profil Saya</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+                            {{-- Jika Admin, Arahkan ke dashboard admin --}}
+                            @if(Auth::user()->role == 'admin')
+                                <li><a class="dropdown-item text-warning" href="#">Dashboard Admin</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            @else
+                                <li><a class="dropdown-item" href="{{ route('customer.profil') }}">Profil Saya</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            @endif
                             <li>
                                 <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                                     <i class="fas fa-sign-out-alt me-1"></i> Logout
@@ -247,12 +297,15 @@
             </div>
         </div>
     </nav>
+    
+    {{-- Main Content Area --}}
     <main>
         @yield('content')
     </main>
 
     @yield('gallery_navigation')
 
+    {{-- jQuery dan Bootstrap JS Bundle --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
