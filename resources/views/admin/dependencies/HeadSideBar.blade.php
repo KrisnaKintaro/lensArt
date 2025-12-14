@@ -70,7 +70,14 @@
                 <img src="" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ auth()->user()->namaLengkap }}</a>
+                <a href="#" class="d-block">
+                    @auth
+                        {{ auth()->user()->namaLengkap ?? auth()->user()->name }}
+                    @else
+                        Guest
+                    @endauth
+                </a>
+
             </div>
         </div>
 
@@ -148,12 +155,32 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="pages/portfolio.php" class="nav-link {{ Route::is('portofolio.*') ? 'active' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('portofolio.*') ? 'menu-open' : '' }}">
                         <i class="nav-icon fas fa-images"></i>
                         <p>
                             Kelola Portofolio
+                            <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        {{-- Data Portofolio --}}
+                        <li class="nav-item">
+                            <a href="{{ route('portofolio.index') }}"
+                            class="nav-link {{ Route::is('portofolio.index') ? 'active' : '' }}">
+                                <i class="fas fa-list nav-icon"></i>
+                                <p>Data Portofolio</p>
+                            </a>
+                        </li>
+
+                        {{-- Tambah Portofolio --}}
+                        <li class="nav-item">
+                            <a href="{{ route('portofolio.create') }}"
+                            class="nav-link {{ Route::is('portofolio.create') ? 'active' : '' }}">
+                                <i class="fas fa-plus-circle nav-icon"></i>
+                                <p>Tambah Portofolio</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="nav-item">
