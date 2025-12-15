@@ -85,7 +85,7 @@
                 {{-- Preview --}}
                 <div class="form-group">
                     <img id="preview"
-                        src="{{ isset($portofolio) ? asset('assetslensart.portofolio/'.$portofolio->urlPorto) : '' }}"
+                        src="{{ isset($portofolio) ? asset('assetslensart/portofolio/'.$portofolio->urlPorto) : '' }}"
                         class="img-thumbnail {{ isset($portofolio) ? '' : 'd-none' }}"
                         style="max-width: 200px;">
                 </div>

@@ -63,7 +63,7 @@ class kelolaPortofolioController extends Controller
 
         $file = $request->file('urlPorto');
         $namaFile = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('assetslensart.portofolio'), $namaFile);
+        $file->move(public_path('assetslensart/portofolio/'), $namaFile);
 
         Portofolio::create([
             'idJenisLayanan' => $request->idJenisLayanan,
@@ -110,7 +110,7 @@ class kelolaPortofolioController extends Controller
         $namaFile = $portofolio->urlPorto;
 
         if ($request->hasFile('urlPorto')) {
-            $path = public_path('assetslensart.portofolio/' . $portofolio->gambar);
+            $path = public_path('assetslensart/portofolio/' . $portofolio->gambar);
             if ($portofolio->gambar && file_exists($path)) {
                 unlink($path);
             }
@@ -140,7 +140,7 @@ class kelolaPortofolioController extends Controller
     {
         $portofolio = Portofolio::findOrFail($id);
 
-        $path = public_path('assetslensart.portofolio/' . $portofolio->gambar);
+        $path = public_path('assetslensart/portofolio/' . $portofolio->gambar);
         if ($portofolio->urlPorto && file_exists($path)) {
             unlink($path);
         }

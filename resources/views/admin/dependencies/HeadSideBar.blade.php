@@ -1,6 +1,6 @@
 <!-- Preloader -->
-<div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__wobble" src="" alt="logoLensArt" height="120" width="120">
+<div class="preloader flex-column justify-content-center align-items-center" style="background-color: #343A40;">
+    <img class="animation__wobble" src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="logoLensArt" height="120" width="120">
 </div>
 
 <!-- Navbar -->
@@ -59,7 +59,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../main/mainPage.php" class="brand-link">
-        <img src="" alt="Logo LensArt" class="brand-image img-circle elevation-3" style="opacity: .8;">
+        <img src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="Logo LensArt" class="brand-image elevation-3" style="opacity: .8;">
         <span class="brand-text font-weight-light">LensArt</span>
     </a>
 
@@ -129,23 +129,34 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link {{ Route::is('kelolaLayanan.*') ? 'menu-open' : '' }}">
+                {{-- BAGIAN LAYANAN & HARGA (PERBAIKAN) --}}
+                <li
+                    class="nav-item {{ Route::is('jenisLayanan.*') || Route::is('paketLayanan.*') ? 'menu-open' : '' }}">
+
+                    {{-- Parent Menu --}}
+                    <a href="#"
+                        class="nav-link {{ Route::is('jenisLayanan.*') || Route::is('paketLayanan.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tags"></i>
                         <p>
                             Layanan & Harga
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+
                     <ul class="nav nav-treeview">
+                        {{-- Kelola Jenis Layanan --}}
                         <li class="nav-item">
-                            <a href="{{ route('jenisLayanan.index') }}" class="nav-link {{ Route::is('kelolaLayanan_Harga.kelolaJenisLayanan') ? 'active' : '' }}">
+                            <a href="{{ route('jenisLayanan.index') }}"
+                                class="nav-link {{ Route::is('jenisLayanan.*') ? 'active' : '' }}">
                                 <i class="fas fa-concierge-bell nav-icon"></i>
                                 <p>Kelola Jenis Layanan</p>
                             </a>
                         </li>
+
+                        {{-- Kelola Daftar Paket --}}
                         <li class="nav-item">
-                            <a href="{{ route('paketLayanan.index') }}" class="nav-link {{ Route::is('kelolaLayanan_Harga.kelolaPaketLayanan') ? 'active' : '' }}">
+                            <a href="{{ route('paketLayanan.index') }}"
+                                class="nav-link {{ Route::is('paketLayanan.*') ? 'active' : '' }}">
                                 <i class="fas fa-box-open nav-icon"></i>
                                 <p>Kelola Daftar Paket</p>
                             </a>

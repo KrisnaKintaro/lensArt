@@ -56,7 +56,7 @@
                             </td>
 
                             <td class="text-center">
-                                <img src="{{ asset('assetslensart.portofolio/'.$item->urlPorto) }}"
+                                <img src="{{ asset('assetslensart/portofolio/'.$item->urlPorto) }}"
                                     class="img-thumbnail"
                                     style="max-height:80px">
                             </td>

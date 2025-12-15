@@ -23,7 +23,7 @@ class Pemesanan extends Model
         'nomorBooking',
     ];
 
-     public function user()
+    public function user()
     {
         return $this->belongsTo(User::class, 'idUser', 'idUser');
     }
