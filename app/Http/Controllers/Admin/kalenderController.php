@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\pemesanan;
+use App\Http\Controllers\Controller;
+use App\Models\Pemesanan;
 use App\Models\SlotJadwal;
 use App\Models\jenisLayanan;
 use App\Models\PaketLayanan;
+use App\Models\Pembayaran; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\Pemesanan as ModelsPemesanan;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class kalenderController extends Controller
 {
@@ -46,7 +46,6 @@ class kalenderController extends Controller
 
         $eventKalender = [];
 
-        // Loop data event per slot jam
         foreach ($dataPemesanan as $dp) {
             $slotJadwal = $dp->slotJadwal;
 
@@ -60,28 +59,12 @@ class kalenderController extends Controller
                 'start'     => $startDateTime,
                 'end'       => $endDateTime,
                 'color'     => '#D32F2F',
-                'editable'  => false, // Agar tidak bisa digeser di tampilan jam
-                'className' => 'slot-booked', // Kelas untuk styling
-
+                'editable'  => false,
+                'className' => 'slot-booked',
                 'extendedProps' => [
                     'status' => $slotJadwal->status,
                 ],
             ];
-
-            // Untuk tampilan customer
-            // $eventKalender[] = [
-            //     'id'        => $slotJadwal->idSlotJadwal,
-            //     'title'     => 'SUDAH DI BOOKING',
-            //     'start'     => $startDateTime,
-            //     'end'       => $endDateTime,
-            //     'color'     => '#D32F2F',
-            //     'editable'  => false, // Agar tidak bisa digeser di tampilan jam
-            //     'className' => 'slot-booked', // Kelas untuk styling
-
-            //     'extendedProps' => [
-            //         'status' => $slotJadwal->status,
-            //     ],
-            // ];
         }
         return response()->json($eventKalender);
     }
@@ -92,7 +75,6 @@ class kalenderController extends Controller
         $end = $request->end;
         $totalJamSehari = 24.0;
 
-        // Hitung total jam terisi per tanggal
         $durasiTerisiHarian = Pemesanan::whereHas('slotJadwal', function ($query) use ($start, $end) {
             $query->whereDate('tanggal', '>=', $start)
                 ->whereDate('tanggal', '<=', $end)
@@ -114,13 +96,10 @@ class kalenderController extends Controller
             $persentase = ($totalJam / $totalJamSehari) * 100;
 
             $className = '';
-            // 60% - 100%
             if ($persentase > 60) {
                 $className = 'day-high';
-                // 20% - 60%
             } elseif ($persentase > 20) {
                 $className = 'day-med';
-                // 0% - 20%
             } else {
                 $className = 'day-low';
             }
@@ -136,11 +115,25 @@ class kalenderController extends Controller
         return response()->json($dataPresentaseHarian);
     }
 
+    // --- BAGIAN UTAMA YANG DIUBAH ---
     public function simpanBooking(Request $request)
     {
         try {
             DB::beginTransaction();
 
+            // 1. Logic Upload Bukti (Baru)
+            $gambarBukti = null;
+            if ($request->metodePembayaran != 'tunai') {
+                if ($request->hasFile('buktiPembayaran')) {
+                    $file = $request->file('buktiPembayaran');
+                    // Kasih nama unik ada '_admin_' biar tau ini uploadan admin
+                    $filename = 'bukti_admin_' . time() . '_' . rand(100, 999) . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('gambarBuktiPembayaran'), $filename);
+                    $gambarBukti = $filename;
+                }
+            }
+
+            // 2. Simpan Slot Jadwal
             $slot = SlotJadwal::create([
                 'idJenisLayanan' => $request->idJenisLayanan,
                 'idPaketLayanan' => $request->idPaketLayanan,
@@ -151,24 +144,44 @@ class kalenderController extends Controller
                 'catatan' => $request->catatan,
             ]);
 
-            $noBooking = 'BOOK-' . date('Ymd') . rand(100, 999);
-            pemesanan::create([
-                // 'idUser' => Auth::user()->idUser,
-                'idUser' => 1,
+            // 3. Simpan Pemesanan
+            $noBooking = 'BOOK-ADM-' . date('Ymd') . rand(100, 999);
+
+            $pemesananBaru = Pemesanan::create([
+                'idUser' => Auth::user()->idUser, // Pakai user admin yang sedang login
                 'idSlotJadwal' => $slot->idSlotJadwal,
                 'tanggalPemesanan' => now(),
                 'lokasiAcara' => $request->lokasiAcara,
                 'catatan' => $request->catatan,
                 'statusPemesanan' => 'pending',
-                'statusPembayaran' => 'menunggu',
+
+                // Data Pembayaran Baru
+                'metodePembayaran' => $request->metodePembayaran,
+                'statusPembayaran' => $request->statusPembayaran,
+                'buktiPembayaran' => $gambarBukti,
                 'totalHarga' => $request->totalHarga,
                 'nomorBooking' => $noBooking
             ]);
 
+            // 4. Buat Record di Tabel Pembayaran (Biar sinkron datanya)
+            Pembayaran::create([
+                'idPemesanan'       => $pemesananBaru->idPemesanan,
+                'jumlahBayar'       => $request->totalHarga,
+                'metodePembayaran'  => $request->metodePembayaran,
+                'statusPembayaran'  => $request->statusPembayaran,
+                'buktiPembayaran'   => $gambarBukti,
+                'tanggalPembayaran' => now(),
+            ]);
+
             DB::commit();
             return response()->json(['message' => 'Booking berhasil disimpan!']);
+
         } catch (\Exception $e) {
             DB::rollBack();
+            // Hapus file gambar kalau gagal simpan di database
+            if (isset($filename) && file_exists(public_path('gambarBuktiPembayaran/' . $filename))) {
+                unlink(public_path('gambarBuktiPembayaran/' . $filename));
+            }
             return response()->json(['message' => 'Gagal simpan: ' . $e->getMessage()], 500);
         }
     }

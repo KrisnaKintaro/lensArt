@@ -87,13 +87,16 @@
                 <div class="modal-body">
                     <form id="formBooking">
                         <div class="row">
+                            {{-- KOLOM KIRI: Waktu & Pembayaran --}}
                             <div class="col-md-6 border-right">
+                                {{-- Tanggal --}}
                                 <div class="form-group">
                                     <label>Tanggal</label>
                                     <input type="text" class="form-control font-weight-bold" id="inputTanggal" readonly
                                         style="background-color: #e9ecef;">
                                 </div>
 
+                                {{-- Jam --}}
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
@@ -125,12 +128,49 @@
                                     </div>
                                 </div>
 
-                                <div class="alert alert-light text-sm border mt-2">
-                                    <i class="fas fa-info-circle text-info"></i> Sistem akan otomatis mengecek jika jam
-                                    bentrok dengan jadwal lain.
+                                <div class="alert alert-light text-sm border mt-1 mb-3">
+                                    <i class="fas fa-info-circle text-info"></i> Sistem otomatis cek bentrok jadwal.
+                                </div>
+
+                                {{-- Status Pembayaran --}}
+                                <div class="form-group">
+                                    <label>Status Pembayaran</label>
+                                    <select class="form-control" id="pilihStatusPembayaran" required>
+                                        <option value="" disabled selected>-- Pilih Status --</option>
+                                        <option value="dp">DP (50 %)</option>
+                                        <option value="lunas">Lunas</option>
+                                    </select>
+                                </div>
+
+                                {{-- Metode Pembayaran --}}
+                                <div class="form-group">
+                                    <label>Metode Pembayaran</label>
+                                    <select class="form-control" id="pilihMetodePembayaran" required>
+                                        <option value="" disabled selected>-- Pilih Metode --</option>
+                                        <option value="transferBank">Transfer Bank</option>
+                                        <option value="eWallet">E-Wallet (OVO/Dana/Gopay)</option>
+                                        <option value="tunai">Tunai (Cash)</option>
+                                    </select>
+                                </div>
+
+                                {{-- Upload Bukti (Hidden by default) --}}
+                                <div class="form-group" id="divUploadBukti" style="display: none;">
+                                    <label>Upload Bukti Pembayaran</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="fileBuktiBayar"
+                                            accept="image/*">
+                                        <label class="custom-file-label" for="fileBuktiBayar">Pilih file...</label>
+                                    </div>
+                                    <small class="text-danger">*Wajib untuk Transfer/E-Wallet</small>
+
+                                    <div class="mt-2 text-center">
+                                        <img id="previewBukti" src="#" alt="Preview Gambar"
+                                            style="display: none; max-width: 100%; max-height: 150px; border-radius: 5px; border: 1px solid #ddd; padding: 3px;">
+                                    </div>
                                 </div>
                             </div>
 
+                            {{-- KOLOM KANAN: Layanan & Detail --}}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Pilih Jenis Layanan</label>
@@ -395,8 +435,40 @@
                     return;
                 }
             });
+
+            $('#pilihMetodePembayaran').on('change', function() {
+                let metode = $(this).val();
+                if (metode === 'tunai') {
+                    $('#divUploadBukti').hide();
+                    $('#fileBuktiBayar').val('');
+                    $('.custom-file-label').text('Pilih file...'); // Reset label bootstrap 4
+                    $('#previewBukti').hide();
+                } else {
+                    $('#divUploadBukti').show();
+                }
+            });
+
+            $('#fileBuktiBayar').on('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    // Update label nama file
+                    $(this).next('.custom-file-label').html(file.name);
+
+                    // Preview gambar
+                    let reader = new FileReader();
+                    reader.onload = function(event) {
+                        $('#previewBukti').attr('src', event.target.result).show();
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    $(this).next('.custom-file-label').html('Pilih file...');
+                    $('#previewBukti').hide();
+                }
+            });
+
             // Simpan ke db
             $('#btnSimpanBooking').on('click', function() {
+                // 1. Ambil semua value
                 let tanggal = $('#inputTanggal').val();
                 let jamMulai = $('#inputJamMulai').val();
                 let jamSelesai = $('#inputJamSelesai').val();
@@ -405,33 +477,70 @@
                 let lokasi = $('#inputLokasi').val();
                 let catatan = $('#inputCatatan').val();
                 let harga = $('#totalHarga').val();
+
+                // Value tambahan
+                let statusPembayaran = $('#pilihStatusPembayaran').val();
+                let metodePembayaran = $('#pilihMetodePembayaran').val();
+                let fileBukti = $('#fileBuktiBayar')[0].files[0];
+
                 let btn = $(this);
-                if (!jamSelesai || !idJenisLayanan || !idPaketLayanan) {
+
+                // 2. Validasi Form
+                if (!jamSelesai || !idJenisLayanan || !idPaketLayanan || !statusPembayaran || !
+                    metodePembayaran) {
                     Toast.fire({
                         icon: 'warning',
-                        title: 'Lengkapi semua data dulu cuy!'
+                        title: 'Lengkapi semua data form!'
                     });
                     return;
                 }
+
+                // Validasi khusus: kalau bukan Tunai, wajib upload bukti
+                if (metodePembayaran !== 'tunai' && !fileBukti) {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Upload bukti pembayaran dulu cuy!'
+                    });
+                    return;
+                }
+
                 btn.text('Menyimpan...').prop('disabled', true);
+
+                // 3. Bungkus Data pake FormData (biar bisa upload file)
+                let formData = new FormData();
+                formData.append('_token', "{{ csrf_token() }}");
+                formData.append('tanggal', tanggal);
+                formData.append('jamMulai', jamMulai);
+                formData.append('jamSelesai', jamSelesai);
+                formData.append('idJenisLayanan', idJenisLayanan);
+                formData.append('idPaketLayanan', idPaketLayanan);
+                formData.append('lokasiAcara', lokasi);
+                formData.append('catatan', catatan);
+                formData.append('totalHarga', harga);
+                // Append data baru
+                formData.append('statusPembayaran', statusPembayaran);
+                formData.append('metodePembayaran', metodePembayaran);
+                if (fileBukti) {
+                    formData.append('buktiPembayaran', fileBukti);
+                }
+
+                // 4. Kirim AJAX
                 $.ajax({
-                    url: "{{ route('kalenderJadwal.simpanBooking') }}",
+                    url: "{{ route('kalenderJadwal.simpanBooking') }}", // Pastikan route ini mengarah ke Controller Admin
                     type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        tanggal: tanggal,
-                        jamMulai: jamMulai,
-                        jamSelesai: jamSelesai,
-                        idJenisLayanan: idJenisLayanan,
-                        idPaketLayanan: idPaketLayanan,
-                        lokasiAcara: lokasi,
-                        catatan: catatan,
-                        totalHarga: harga,
-                    },
+                    data: formData,
+                    contentType: false, // Wajib false buat upload file
+                    processData: false, // Wajib false buat upload file
                     success: function(response) {
                         $('#modalBooking').modal('hide');
                         Swal.fire('Berhasil!', response.message, 'success');
-                        // Refresh Kalender biar kotak merahnya muncul
+
+                        // Reset Form Manual
+                        $('#formBooking')[0].reset();
+                        $('#previewBukti').hide();
+                        $('.custom-file-label').text('Pilih file...');
+
+                        // Refresh Kalender
                         calendar.refetchEvents();
                     },
                     error: function(xhr) {

@@ -157,7 +157,7 @@
                                 <label class="form-label fw-bold">Status Pembayaran</label>
                                 <select class="form-select" id="pilihStatusPembayaran" required>
                                     <option value="" disabled selected>-- Pilih Status --</option>
-                                    <option value="dp">DP (Down Payment)</option>
+                                    <option value="dp">DP (50 %)</option>
                                     <option value="lunas">Lunas</option>
                                 </select>
                             </div>
@@ -476,7 +476,7 @@
                 $('#previewBukti').hide();
             }
         });
-        
+
         // Simpan ke db
         $('#btnSimpanBooking').on('click', function() {
             let tanggal = $('#inputTanggal').val();
