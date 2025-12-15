@@ -18,7 +18,7 @@
 
                 @csrf
                 @isset($portofolio)
-                    @method('PUT')
+                @method('PUT')
                 @endisset
 
                 {{-- Jenis Layanan --}}
@@ -27,10 +27,10 @@
                     <select name="idJenisLayanan" class="form-control" required>
                         <option value="">-- Pilih Layanan --</option>
                         @foreach($jenisLayanan as $layanan)
-                            <option value="{{ $layanan->idJenisLayanan }}"
-                                {{ old('idJenisLayanan', $portofolio->idJenisLayanan ?? '') == $layanan->idJenisLayanan ? 'selected' : '' }}>
-                                {{ $layanan->namaLayanan }}
-                            </option>
+                        <option value="{{ $layanan->idJenisLayanan }}"
+                            {{ old('idJenisLayanan', $portofolio->idJenisLayanan ?? '') == $layanan->idJenisLayanan ? 'selected' : '' }}>
+                            {{ $layanan->namaLayanan }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
@@ -48,18 +48,10 @@
                 <div class="form-group">
                     <label>Deskripsi</label>
                     <textarea name="deskripsi"
-                            class="form-control"
-                            rows="3">{{ old('deskripsi', $portofolio->deskripsi ?? '') }}</textarea>
+                        class="form-control"
+                        rows="3">{{ old('deskripsi', $portofolio->deskripsi ?? '') }}</textarea>
                 </div>
 
-                {{-- URL --}}
-                <div class="form-group">
-                    <label>URL Portofolio</label>
-                    <input type="url" name="urlPorto"
-                        class="form-control"
-                        placeholder="https://example.com"
-                        value="{{ old('urlPorto', $portofolio->urlPorto ?? '') }}">
-                </div>
 
                 {{-- Jenis Porto --}}
                 <div class="form-group">
@@ -76,7 +68,7 @@
                     <label>Tanggal</label>
                     <input type="date" name="tanggalPorto"
                         class="form-control"
-                        value="{{ old('tanggalPorto', $portofolio->tanggalPorto ?? '') }}"
+                        value="{{ old('tanggalPorto', isset($portofolio) ? $portofolio->tanggalPorto->format('Y-m-d') : '') }}"
                         required>
                 </div>
 
@@ -84,7 +76,7 @@
                 <div class="form-group">
                     <label>Gambar Portofolio</label>
                     <input type="file"
-                        name="gambar"
+                        name="urlPorto"
                         class="form-control-file"
                         accept="image/*"
                         onchange="previewImage(this)">
@@ -93,7 +85,7 @@
                 {{-- Preview --}}
                 <div class="form-group">
                     <img id="preview"
-                        src="{{ isset($portofolio) ? asset('gambarPortofolio/'.$portofolio->gambar) : '' }}"
+                        src="{{ isset($portofolio) ? asset('assetslensart.portofolio/'.$portofolio->urlPorto) : '' }}"
                         class="img-thumbnail {{ isset($portofolio) ? '' : 'd-none' }}"
                         style="max-width: 200px;">
                 </div>
@@ -117,19 +109,19 @@
 
 @section('script')
 <script>
-function previewImage(input) {
-    const preview = document.getElementById('preview');
+    function previewImage(input) {
+        const preview = document.getElementById('preview');
 
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
 
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.classList.remove('d-none');
-        };
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+            };
 
-        reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(input.files[0]);
+        }
     }
-}
 </script>
 @endsection

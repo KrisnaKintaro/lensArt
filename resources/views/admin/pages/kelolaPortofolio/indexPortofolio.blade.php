@@ -31,7 +31,7 @@
     {{-- Table --}}
     <div class="card">
         <div class="card-header">
-            
+
         </div>
 
         <div class="card-body table-responsive p-0">
@@ -56,7 +56,7 @@
                             </td>
 
                             <td class="text-center">
-                                <img src="{{ asset('gambarPortofolio/'.$item->gambar) }}"
+                                <img src="{{ asset('assetslensart.portofolio/'.$item->urlPorto) }}"
                                     class="img-thumbnail"
                                     style="max-height:80px">
                             </td>

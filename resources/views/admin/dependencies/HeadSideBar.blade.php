@@ -33,7 +33,8 @@
             <div class="navbar-search-block">
                 <form class="form-inline">
                     <div class="input-group input-group-sm">
-                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                        <input class="form-control form-control-navbar" type="search" placeholder="Search"
+                            aria-label="Search">
                         <div class="input-group-append">
                             <button class="btn btn-navbar" type="submit">
                                 <i class="fas fa-search"></i>
@@ -84,7 +85,8 @@
         <!-- SidebarSearch Form -->
         <div class="form-inline">
             <div class="input-group" data-widget="sidebar-search">
-                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Search"
+                    aria-label="Search">
                 <div class="input-group-append">
                     <button class="btn btn-sidebar">
                         <i class="fas fa-search fa-fw"></i>
@@ -95,7 +97,8 @@
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
 
                 <li class="nav-item {{ Route::is('booking.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('booking.*') ? 'active' : '' }}">
@@ -107,13 +110,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ Route('booking.daftarPemesanan') }}" class="nav-link {{ Route::is('booking.daftarPemesanan') ? 'active' : '' }}">
+                            <a href="{{ Route('booking.daftarPemesanan') }}"
+                                class="nav-link {{ Route::is('booking.daftarPemesanan') ? 'active' : '' }}">
                                 <i class="fas fa-clipboard-list nav-icon"></i>
                                 <p>Daftar Pemesanan</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ Route('booking.dataPembayaran') }}" class="nav-link {{ Route::is('booking.dataPembayaran') ? 'active' : '' }}">
+                            <a href="{{ Route('booking.dataPembayaran') }}"
+                                class="nav-link {{ Route::is('booking.dataPembayaran') ? 'active' : '' }}">
                                 <i class="fas fa-file-invoice-dollar nav-icon"></i>
                                 <p>Validasi Pembayaran</p>
                             </a>
@@ -122,7 +127,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('kalenderJadwal') }}" class="nav-link {{ Route::is('kalenderJadwal') ? 'active' : '' }}">
+                    <a href="{{ route('kalenderJadwal') }}"
+                        class="nav-link {{ Route::is('kalenderJadwal') ? 'active' : '' }}">
                         <i class="nav-icon far fa-calendar-alt"></i>
                         <p>
                             Kalender Jadwal Kerja
@@ -140,13 +146,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php" class="nav-link {{ Route::is('kelolaLayanan.kelolaJenisLayanan') ? 'active' : '' }}">
+                            <a href="../mahasiswa/read.php"
+                                class="nav-link {{ Route::is('kelolaLayanan.kelolaJenisLayanan') ? 'active' : '' }}">
                                 <i class="fas fa-concierge-bell nav-icon"></i>
                                 <p>Kelola Jenis Layanan</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php" class="nav-link {{ Route::is('kelolaLayanan.kelolaDaftarPaket') ? 'active' : '' }}">
+                            <a href="../mahasiswa/read.php"
+                                class="nav-link {{ Route::is('kelolaLayanan.kelolaDaftarPaket') ? 'active' : '' }}">
                                 <i class="fas fa-box-open nav-icon"></i>
                                 <p>Kelola Daftar Paket</p>
                             </a>
@@ -154,19 +162,21 @@
                     </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link {{ Route::is('portofolio.*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ Route::is('portofolio.*') ? 'menu-open' : '' }}">
+
+                    <a href="#" class="nav-link {{ Route::is('portofolio.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-images"></i>
                         <p>
                             Kelola Portofolio
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+
                     <ul class="nav nav-treeview">
                         {{-- Data Portofolio --}}
                         <li class="nav-item">
                             <a href="{{ route('portofolio.index') }}"
-                            class="nav-link {{ Route::is('portofolio.index') ? 'active' : '' }}">
+                                class="nav-link {{ Route::is('portofolio.index') || Route::is('portofolio.edit') ? 'active' : '' }}">
                                 <i class="fas fa-list nav-icon"></i>
                                 <p>Data Portofolio</p>
                             </a>
@@ -175,7 +185,7 @@
                         {{-- Tambah Portofolio --}}
                         <li class="nav-item">
                             <a href="{{ route('portofolio.create') }}"
-                            class="nav-link {{ Route::is('portofolio.create') ? 'active' : '' }}">
+                                class="nav-link {{ Route::is('portofolio.create') ? 'active' : '' }}">
                                 <i class="fas fa-plus-circle nav-icon"></i>
                                 <p>Tambah Portofolio</p>
                             </a>
@@ -193,13 +203,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php" class="nav-link {{ Route::is('kelolaLaporan.laporanPendapatan') ? 'active' : '' }}">
+                            <a href="../mahasiswa/read.php"
+                                class="nav-link {{ Route::is('kelolaLaporan.laporanPendapatan') ? 'active' : '' }}">
                                 <i class="fas fa-money-bill-wave nav-icon"></i>
                                 <p>Laporan Pendapatan</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php" class="nav-link {{ Route::is('kelolaLaporan.laporanPermintaan') ? 'active' : '' }}">
+                            <a href="../mahasiswa/read.php"
+                                class="nav-link {{ Route::is('kelolaLaporan.laporanPermintaan') ? 'active' : '' }}">
                                 <i class="fas fa-chart-bar nav-icon"></i>
                                 <p>Laporan Permintaan</p>
                             </a>
@@ -208,7 +220,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('kelolaAkunCustomer') }}" class="nav-link {{ Route::is('kelolaAkunCustomer.*') ? 'active' : '' }}">
+                    <a href="{{ route('kelolaAkunCustomer') }}"
+                        class="nav-link {{ Route::is('kelolaAkunCustomer.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users-cog"></i>
                         <p>
                             Kelola Akun Customer

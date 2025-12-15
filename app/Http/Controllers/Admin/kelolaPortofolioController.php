@@ -51,28 +51,27 @@ class kelolaPortofolioController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'idJenisLayanan' => 'required|integer',
             'namaPortofolio' => 'required|string|max:255',
             'deskripsi'      => 'nullable|string',
-            'urlPorto'       => 'nullable|url',
+            'urlPorto'       => 'required|image|mimes:jpg,jpeg,png',
             'jenisPorto'     => 'required|string|max:100',
             'tanggalPorto'   => 'required|date',
-            'gambar'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $file = $request->file('gambar');
+        $file = $request->file('urlPorto');
         $namaFile = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('gambarPortofolio'), $namaFile);
+        $file->move(public_path('assetslensart.portofolio'), $namaFile);
 
         Portofolio::create([
             'idJenisLayanan' => $request->idJenisLayanan,
             'namaPortofolio' => $request->namaPortofolio,
             'deskripsi'      => $request->deskripsi,
-            'urlPorto'       => $request->urlPorto,
+            'urlPorto'       => $namaFile,
             'jenisPorto'     => $request->jenisPorto,
             'tanggalPorto'   => $request->tanggalPorto,
-            'gambar'         => $namaFile,
         ]);
 
         return redirect()->route('portofolio.index')
@@ -102,34 +101,32 @@ class kelolaPortofolioController extends Controller
             'idJenisLayanan' => 'required|integer',
             'namaPortofolio' => 'required|string|max:255',
             'deskripsi'      => 'nullable|string',
-            'urlPorto'       => 'nullable|url',
+            'urlPorto'       => 'nullable|image|mimes:jpg,jpeg,png',
             'jenisPorto'     => 'required|string|max:100',
             'tanggalPorto'   => 'required|date',
-            'gambar'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $portofolio = Portofolio::findOrFail($id);
-        $namaFile = $portofolio->gambar;
+        $namaFile = $portofolio->urlPorto;
 
-        if ($request->hasFile('gambar')) {
-            $path = public_path('gambarPortofolio/' . $portofolio->gambar);
+        if ($request->hasFile('urlPorto')) {
+            $path = public_path('assetslensart.portofolio/' . $portofolio->gambar);
             if ($portofolio->gambar && file_exists($path)) {
                 unlink($path);
             }
 
-            $file = $request->file('gambar');
+            $file = $request->file('urlPorto');
             $namaFile = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('gambarPortofolio'), $namaFile);
+            $file->move(public_path('assetslensart.portofolio'), $namaFile);
         }
 
         $portofolio->update([
             'idJenisLayanan' => $request->idJenisLayanan,
             'namaPortofolio' => $request->namaPortofolio,
             'deskripsi'      => $request->deskripsi,
-            'urlPorto'       => $request->urlPorto,
+            'urlPorto'       => $namaFile,
             'jenisPorto'     => $request->jenisPorto,
             'tanggalPorto'   => $request->tanggalPorto,
-            'gambar'         => $namaFile,
         ]);
 
         return redirect()->route('portofolio.index')
@@ -143,8 +140,8 @@ class kelolaPortofolioController extends Controller
     {
         $portofolio = Portofolio::findOrFail($id);
 
-        $path = public_path('gambarPortofolio/' . $portofolio->gambar);
-        if ($portofolio->gambar && file_exists($path)) {
+        $path = public_path('assetslensart.portofolio/' . $portofolio->gambar);
+        if ($portofolio->urlPorto && file_exists($path)) {
             unlink($path);
         }
 
