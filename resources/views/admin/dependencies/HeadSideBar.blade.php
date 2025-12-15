@@ -1,6 +1,7 @@
 <!-- Preloader -->
 <div class="preloader flex-column justify-content-center align-items-center" style="background-color: #343A40;">
-    <img class="animation__wobble" src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="logoLensArt" height="120" width="120">
+    <img class="animation__wobble" src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="logoLensArt"
+        height="120" width="120">
 </div>
 
 <!-- Navbar -->
@@ -59,7 +60,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../main/mainPage.php" class="brand-link">
-        <img src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="Logo LensArt" class="brand-image elevation-3" style="opacity: .8;">
+        <img src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="Logo LensArt"
+            class="brand-image elevation-3" style="opacity: .8;">
         <span class="brand-text font-weight-light">LensArt</span>
     </a>
 
@@ -128,8 +130,6 @@
                         </p>
                     </a>
                 </li>
-
-                {{-- BAGIAN LAYANAN & HARGA (PERBAIKAN) --}}
                 <li
                     class="nav-item {{ Route::is('jenisLayanan.*') || Route::is('paketLayanan.*') ? 'menu-open' : '' }}">
 
@@ -195,8 +195,8 @@
                     </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link {{ Route::is('kelolaLaporan.*') ? '' : '' }}">
+                <li class="nav-item {{ Route::is('laporan.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('laporan.*') ? '' : '' }}">
                         <i class="nav-icon fas fa-chart-line"></i>
                         <p>
                             Kelola Laporan
@@ -205,15 +205,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php"
-                                class="nav-link {{ Route::is('kelolaLaporan.laporanPendapatan') ? 'active' : '' }}">
+                            <a href="{{ route('laporan.pendapatan') }}"
+                                class="nav-link {{ Route::is('laporan.pendapatan') ? 'active' : '' }}">
                                 <i class="fas fa-money-bill-wave nav-icon"></i>
                                 <p>Laporan Pendapatan</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php"
-                                class="nav-link {{ Route::is('kelolaLaporan.laporanPermintaan') ? 'active' : '' }}">
+                            <a href="{{ route('laporan.permintaan') }}"
+                                class="nav-link {{ Route::is('laporan.permintaan') ? 'active' : '' }}">
                                 <i class="fas fa-chart-bar nav-icon"></i>
                                 <p>Laporan Permintaan</p>
                             </a>

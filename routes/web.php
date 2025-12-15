@@ -14,7 +14,8 @@ use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\Customer\JenisLayananController;
 use App\Http\Controllers\Admin\KelolaJenisLayananController;
 use App\Http\Controllers\Admin\KelolaPaketLayananController;
-
+use App\Http\Controllers\Admin\laporanPendapatanController;
+use App\Http\Controllers\Admin\laporanPermintaanController;
 
 // ------------------------------------------
 // ROUTE BEBAS AKSES (TIDAK PERLU LOGIN)
@@ -78,17 +79,22 @@ Route::middleware(['auth', 'cek_role:admin'])->group(function () {
     Route::put('/jenis-layanan/{id}', [KelolaJenisLayananController::class, 'update'])->name('jenisLayanan.update');
     Route::delete('/jenis-layanan/{id}', [KelolaJenisLayananController::class, 'destroy'])->name('jenisLayanan.destroy');
 
-    // kelola paket layanan 
+    // kelola paket layanan
     Route::get('/paket-layanan', [KelolaPaketLayananController::class, 'index'])->name('paketLayanan.index');
     Route::post('/paket-layanan', [KelolaPaketLayananController::class, 'store'])->name('paketLayanan.store');
     Route::get('/paket-layanan/{id}/edit', [KelolaPaketLayananController::class, 'edit'])->name('paketLayanan.edit');
     Route::put('/paket-layanan/{id}', [KelolaPaketLayananController::class, 'update'])->name('paketLayanan.update');
     Route::delete('/paket-layanan/{id}', [KelolaPaketLayananController::class, 'destroy'])->name('paketLayanan.destroy');
 
-
     // Pembayaran
-    Route::get('lihatDataPembayaran', [pembayaranController::class, 'index'])->name('booking.dataPembayaran');
+    Route::get('laporan/lihatDataPembayaran', [pembayaranController::class, 'index'])->name('booking.dataPembayaran');
     Route::post('pembayaran/updateStatusPembayaran', [pembayaranController::class, 'updateStatusPembayaran'])->name('booking.pembayaran.updateStatusPembayaran');
+
+    // Laporan pendapatan
+    Route::get('laporan/lihatLaporanPendapatan', [laporanPendapatanController::class, 'index'])->name('laporan.pendapatan');
+
+    // Laporan permintaan
+    Route::get('laporan/lihatLaporanPermintaan', [laporanPermintaanController::class, 'index'])->name('laporan.permintaan');
 });
 
 
