@@ -71,14 +71,7 @@
                 <img src="" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">
-                    @auth
-                        {{ auth()->user()->namaLengkap ?? auth()->user()->name }}
-                    @else
-                        Guest
-                    @endauth
-                </a>
-
+                <a href="#" class="d-block">{{ auth()->user()->namaLengkap }}</a>
             </div>
         </div>
 
@@ -146,15 +139,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php"
-                                class="nav-link {{ Route::is('kelolaLayanan.kelolaJenisLayanan') ? 'active' : '' }}">
+                            <a href="{{ route('jenisLayanan.index') }}" class="nav-link {{ Route::is('kelolaLayanan_Harga.kelolaJenisLayanan') ? 'active' : '' }}">
                                 <i class="fas fa-concierge-bell nav-icon"></i>
                                 <p>Kelola Jenis Layanan</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../mahasiswa/read.php"
-                                class="nav-link {{ Route::is('kelolaLayanan.kelolaDaftarPaket') ? 'active' : '' }}">
+                            <a href="{{ route('paketLayanan.index') }}" class="nav-link {{ Route::is('kelolaLayanan_Harga.kelolaPaketLayanan') ? 'active' : '' }}">
                                 <i class="fas fa-box-open nav-icon"></i>
                                 <p>Kelola Daftar Paket</p>
                             </a>

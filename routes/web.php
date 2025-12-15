@@ -12,6 +12,8 @@ use App\Http\Controllers\customer\dashboard_awal_controller;
 use App\Http\Controllers\Customer\dashboardAwalController;
 use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\Customer\JenisLayananController;
+use App\Http\Controllers\Admin\KelolaJenisLayananController;
+use App\Http\Controllers\Admin\KelolaPaketLayananController;
 
 
 // ------------------------------------------
@@ -243,3 +245,16 @@ Route::post('/portofolio', [kelolaPortofolioController::class, 'store'])->name('
 Route::get('/portofolio/{id}/edit', [kelolaPortofolioController::class, 'edit'])->name('portofolio.edit');
 Route::put('/portofolio/{id}', [kelolaPortofolioController::class, 'update'])->name('portofolio.update');
 Route::delete('/portofolio/{id}', [kelolaPortofolioController::class, 'destroy'])->name('portofolio.destroy');
+
+Route::get('/jenis-layanan', [KelolaJenisLayananController::class, 'index'])->name('jenisLayanan.index');
+Route::get('/jenis-layanan/create', [KelolaJenisLayananController::class, 'create'])->name('jenisLayanan.create');
+Route::post('/jenis-layanan', [KelolaJenisLayananController::class, 'store'])->name('jenisLayanan.store');
+Route::get('/jenis-layanan/{id}/edit', [KelolaJenisLayananController::class, 'edit'])->name('jenisLayanan.edit');
+Route::put('/jenis-layanan/{id}', [KelolaJenisLayananController::class, 'update'])->name('jenisLayanan.update');
+Route::delete('/jenis-layanan/{id}', [KelolaJenisLayananController::class, 'destroy'])->name('jenisLayanan.destroy');
+
+Route::get('/paket-layanan', [KelolaPaketLayananController::class, 'index'])->name('paketLayanan.index');
+Route::post('/paket-layanan', [KelolaPaketLayananController::class, 'store'])->name('paketLayanan.store');
+Route::get('/paket-layanan/{id}/edit', [KelolaPaketLayananController::class, 'edit'])->name('paketLayanan.edit');
+Route::put('/paket-layanan/{id}', [KelolaPaketLayananController::class, 'update'])->name('paketLayanan.update');
+Route::delete('/paket-layanan/{id}', [KelolaPaketLayananController::class, 'destroy'])->name('paketLayanan.destroy');
