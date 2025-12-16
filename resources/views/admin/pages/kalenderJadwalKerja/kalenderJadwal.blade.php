@@ -314,15 +314,26 @@
 
                     var waktuMulai = moment(info.startStr);
                     var waktuSelesai = waktuMulai.clone().add(1, 'hours');
-                    // Reset Form
+
+                    // 1. Reset Form Input (Standar)
                     $('#formBooking')[0].reset();
+
+                    // ============================================================
+                    // TAMBAHAN: Reset Manual Tampilan Preview & Container Upload
+                    // ============================================================
+                    $('#previewBukti').attr('src', '#').hide(); // Hapus src gambar & sembunyikan
+                    $('#divUploadBukti')
+                .hide(); // Sembunyikan container upload (karena select box kembali ke default)
+                    $('#fileBuktiBayar').val(
+                    ''); // Pastikan input file kosong (opsional, karena reset() sudah handle ini)
+                    // ============================================================
+
                     $('#pilihPaket').prop('disabled', true).html(
                         '<option>-- Pilih Layanan Dulu --</option>');
                     $('#inputTotalHarga').val('');
 
                     // Set Data
                     $('#inputTanggal').val(waktuMulai.format('YYYY-MM-DD'));
-
                     $('#inputJamMulai').val(waktuMulai.format('HH:mm'));
                     $('#inputJamSelesai').val(waktuSelesai.format('HH:mm'));
 

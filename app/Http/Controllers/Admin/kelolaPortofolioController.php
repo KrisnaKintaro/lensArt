@@ -23,7 +23,7 @@ class kelolaPortofolioController extends Controller
         }
 
         $portofolios = $query->orderByDesc('idPortofolio')
-                            ->paginate(10);
+            ->paginate(10);
 
         $portofolios->appends($request->all());
 
@@ -117,7 +117,7 @@ class kelolaPortofolioController extends Controller
 
             $file = $request->file('urlPorto');
             $namaFile = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assetslensart.portofolio'), $namaFile);
+            $file->move(public_path('assetslensart/portofolio/'), $namaFile);
         }
 
         $portofolio->update([
@@ -140,12 +140,19 @@ class kelolaPortofolioController extends Controller
     {
         $portofolio = Portofolio::findOrFail($id);
 
-        $path = public_path('assetslensart/portofolio/' . $portofolio->gambar);
-        if ($portofolio->urlPorto && file_exists($path)) {
-            unlink($path);
+        // 1. Cek dulu apakah nama filenya ada di database
+        if ($portofolio->urlPorto) {
+
+            // 2. Tentukan path lengkap file gambarnya
+            $path = public_path('assetslensart/portofolio/' . $portofolio->urlPorto);
+
+            // 3. Cek apakah FILE FISIKNYA benar-benar ada di folder
+            if (file_exists($path)) {
+                unlink($path); // Hapus file
+            }
         }
 
-        $portofolio->delete();
+        $portofolio->delete(); // Hapus data di database
 
         return redirect()->route('portofolio.index')
             ->with('success', 'Data portofolio berhasil dihapus');

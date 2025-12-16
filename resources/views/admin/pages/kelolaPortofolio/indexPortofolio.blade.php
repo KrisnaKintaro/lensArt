@@ -8,25 +8,35 @@
         <h4>Data Portofolio</h4>
     </div>
 
-    {{-- Filter --}}
-    <form method="GET" class="mb-3">
-        <div class="row">
-            <div class="col-md-4">
-                <select name="idJenisLayanan" class="form-control">
-                    <option value="">-- Semua Layanan --</option>
-                    @foreach($jenisLayanan as $layanan)
+    <div class="row mb-3">
+
+        {{-- Kolom Kiri: Form Filter --}}
+        <div class="col-md-8">
+            <form method="GET">
+                <div class="input-group" style="max-width: 400px;"> <select name="idJenisLayanan" class="form-control">
+                        <option value="">-- Semua Layanan --</option>
+                        @foreach($jenisLayanan as $layanan)
                         <option value="{{ $layanan->idJenisLayanan }}"
                             {{ request('idJenisLayanan') == $layanan->idJenisLayanan ? 'selected' : '' }}>
                             {{ $layanan->namaLayanan }}
                         </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-secondary">Filter</button>
-            </div>
+                        @endforeach
+                    </select>
+                    {{-- Tombol Filter nempel sama select --}}
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="submit">Filter</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+
+        {{-- Kolom Kanan: Tombol Tambah (Rata Kanan) --}}
+        <div class="col-md-4 text-right"> <a href="{{ route('portofolio.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tambah Portofolio
+            </a>
+        </div>
+
+    </div>
 
     {{-- Table --}}
     <div class="card">
@@ -50,58 +60,58 @@
 
                 <tbody>
                     @forelse($portofolios as $item)
-                        <tr>
-                            <td class="text-center">
-                                {{ $portofolios->firstItem() + $loop->index }}
-                            </td>
+                    <tr>
+                        <td class="text-center">
+                            {{ $portofolios->firstItem() + $loop->index }}
+                        </td>
 
-                            <td class="text-center">
-                                <img src="{{ asset('assetslensart/portofolio/'.$item->urlPorto) }}"
-                                    class="img-thumbnail"
-                                    style="max-height:80px">
-                            </td>
+                        <td class="text-center">
+                            <img src="{{ asset('assetslensart/portofolio/'.$item->urlPorto) }}"
+                                class="img-thumbnail"
+                                style="max-height:80px">
+                        </td>
 
-                            <td>{{ $item->namaPortofolio }}</td>
+                        <td>{{ $item->namaPortofolio }}</td>
 
-                            <td>
-                                {{ $item->jenisLayanan->namaLayanan ?? '-' }}
-                            </td>
+                        <td>
+                            {{ $item->jenisLayanan->namaLayanan ?? '-' }}
+                        </td>
 
-                            <td>
-                                <span class="badge badge-info">
-                                    {{ $item->jenisPorto }}
-                                </span>
-                            </td>
+                        <td>
+                            <span class="badge badge-info">
+                                {{ $item->jenisPorto }}
+                            </span>
+                        </td>
 
-                            <td class="text-center">
-                                {{ \Carbon\Carbon::parse($item->tanggalPorto)->format('d-m-Y') }}
-                            </td>
+                        <td class="text-center">
+                            {{ \Carbon\Carbon::parse($item->tanggalPorto)->format('d-m-Y') }}
+                        </td>
 
-                            <td class="text-center">
-                                <a href="{{ route('portofolio.edit', $item->idPortofolio) }}"
+                        <td class="text-center">
+                            <a href="{{ route('portofolio.edit', $item->idPortofolio) }}"
                                 class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                <i class="fas fa-edit"></i>
+                            </a>
 
-                                <form action="{{ route('portofolio.destroy', $item->idPortofolio) }}"
-                                    method="POST"
-                                    class="d-inline form-delete">
-                                    @csrf
-                                    @method('DELETE')
+                            <form action="{{ route('portofolio.destroy', $item->idPortofolio) }}"
+                                method="POST"
+                                class="d-inline form-delete">
+                                @csrf
+                                @method('DELETE')
 
-                                    <button type="button"
-                                            class="btn btn-danger btn-sm btn-delete">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+                                <button type="button"
+                                    class="btn btn-danger btn-sm btn-delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="7" class="text-center text-muted">
-                                Data portofolio belum tersedia
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">
+                            Data portofolio belum tersedia
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -118,21 +128,21 @@
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-document.querySelectorAll('.btn-delete').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const form = this.closest('form');
-        Swal.fire({
-            title: 'Hapus data?',
-            text: 'Data yang dihapus tidak dapat dikembalikan',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, hapus'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const form = this.closest('form');
+            Swal.fire({
+                title: 'Hapus data?',
+                text: 'Data yang dihapus tidak dapat dikembalikan',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
-});
 </script>
 @endsection

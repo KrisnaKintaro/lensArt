@@ -12,12 +12,6 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="../main/mainPage.php" class="nav-link">Beranda</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Kontak</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
             <a href="{{ route('logout') }}" class="nav-link">
                 <i class="fas fa-sign-out-alt"></i> LogOut
             </a>
@@ -59,7 +53,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../main/mainPage.php" class="brand-link">
+    <a href="#" class="brand-link">
         <img src="{{ asset('assetslensart/logo/Logo Lensart Putih.png') }}" alt="Logo LensArt"
             class="brand-image elevation-3" style="opacity: .8;">
         <span class="brand-text font-weight-light">LensArt</span>
@@ -69,9 +63,9 @@
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
+            {{-- <div class="image">
                 <img src="" class="img-circle elevation-2" alt="User Image">
-            </div>
+            </div> --}}
             <div class="info">
                 <a href="#" class="d-block">{{ auth()->user()->namaLengkap }}</a>
             </div>
@@ -163,36 +157,14 @@
                         </li>
                     </ul>
                 </li>
-
-                <li class="nav-item {{ Route::is('portofolio.*') ? 'menu-open' : '' }}">
-
-                    <a href="#" class="nav-link {{ Route::is('portofolio.*') ? 'active' : '' }}">
+                <li class="nav-item">
+                    <a href="{{ route('portofolio.index') }}"
+                        class="nav-link nav-link {{ Route::is('portofolio.index') || Route::is('portofolio.edit') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-images"></i>
                         <p>
                             Kelola Portofolio
-                            <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-
-                    <ul class="nav nav-treeview">
-                        {{-- Data Portofolio --}}
-                        <li class="nav-item">
-                            <a href="{{ route('portofolio.index') }}"
-                                class="nav-link {{ Route::is('portofolio.index') || Route::is('portofolio.edit') ? 'active' : '' }}">
-                                <i class="fas fa-list nav-icon"></i>
-                                <p>Data Portofolio</p>
-                            </a>
-                        </li>
-
-                        {{-- Tambah Portofolio --}}
-                        <li class="nav-item">
-                            <a href="{{ route('portofolio.create') }}"
-                                class="nav-link {{ Route::is('portofolio.create') ? 'active' : '' }}">
-                                <i class="fas fa-plus-circle nav-icon"></i>
-                                <p>Tambah Portofolio</p>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
 
                 <li class="nav-item {{ Route::is('laporan.*') ? 'menu-open' : '' }}">

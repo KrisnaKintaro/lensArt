@@ -189,51 +189,62 @@
             </a>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
+                <ul class="navbar-nav ms-auto align-items-lg-center"> {{-- ms-auto untuk kanan, align-items-lg-center biar tombol rata tengah --}}
 
                     <li class="nav-item">
-                        <a class="nav-link text-white-50" href="{{ route('layanan.index') }}">Lihat Layanan</a>
+                        <a class="nav-link" href="{{ route('layanan.index') }}">Layanan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white-50" href="{{ route('portofolio.event') }}">Lihat Portofolio</a>
+                        <a class="nav-link" href="{{ route('portofolio.event') }}">Portofolio</a>
                     </li>
 
-                    <li class="nav-item mx-2">
-                        <a class="btn btn-warning booking-button rounded-pill"
-                            href="{{ route('layanan.index') }}">
-                            Booking Sekarang
-                        </a>
-                    </li>
+                    {{-- MENU KHUSUS CUSTOMER (DIBENAHI) --}}
                     @auth
                     @if(Auth::user()->role == 'customer')
-                    <li class="nav-item">
-                        <a class="nav-link text-white-50" href="">Riwayat Booking</a>
+                    <li class="nav-item mx-lg-2">
+                        <a class="nav-link text-info fw-bold" href="{{ route('customer.riwayat.booking') }}">
+                            <i class="fas fa-camera me-1"></i> Riwayat Booking
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white-50" href="">Verifikasi Pembayaran</a>
+                    <li class="nav-item mx-lg-2">
+                        <a class="nav-link text-success fw-bold" href="{{ route('customer.riwayat.pembayaran') }}">
+                            <i class="fas fa-check-circle me-1"></i> Verifikasi Pembayaran
+                        </a>
                     </li>
                     @endif
                     @endauth
 
+                    {{-- TOMBOL BOOKING (Ditaruh di tengah/kiri navbar untuk visibilitas) --}}
+                    <li class="nav-item mx-2 order-lg-last"> {{-- order-lg-last agar tombol Booking muncul paling kanan di desktop --}}
+                        <a class="btn btn-warning booking-button rounded-pill" href="{{ route('layanan.index') }}">
+                            Booking Sekarang
+                        </a>
+                    </li>
+
+                    {{-- AUTH STATUS (Login/Register/Akun) --}}
                     @guest
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('login') }}">Login</a>
+                        <a class="nav-link" href="{{ route('login') }}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('register') }}">Register</a>
+                        <a class="nav-link" href="{{ route('register') }}">Register</a>
                     </li>
                     @endguest
 
                     @auth
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link dropdown-toggle text-white fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->namaLengkap ?? 'Akun' }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ route('customer.profil') }}">Profil Saya</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+                            {{-- Jika Admin, Arahkan ke dashboard admin --}}
+                            @if(Auth::user()->role == 'admin')
+                                <li><a class="dropdown-item text-warning" href="{{ route('kalenderJadwal') }}">Dashboard Admin</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            @else
+                                <li><a class="dropdown-item" href="{{ route('customer.profil') }}">Profil Saya</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            @endif
                             <li>
                                 <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                                     <i class="fas fa-sign-out-alt me-1"></i> Logout
@@ -242,7 +253,6 @@
                         </ul>
                     </li>
                     @endauth
-
                 </ul>
             </div>
         </div>

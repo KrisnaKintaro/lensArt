@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\KelolaJenisLayananController;
 use App\Http\Controllers\Admin\KelolaPaketLayananController;
 use App\Http\Controllers\Admin\laporanPendapatanController;
 use App\Http\Controllers\Admin\laporanPermintaanController;
+use App\Http\Controllers\Customer\CustomerTransaksiController;
 
 // ------------------------------------------
 // ROUTE BEBAS AKSES (TIDAK PERLU LOGIN)
@@ -107,6 +108,24 @@ Route::middleware(['auth', 'cek_role:customer'])->group(function () {
     Route::get('/customer/profil', function () {
         return view('customer.profil');
     })->name('customer.profil');
+
+    Route::prefix('customer')->name('customer.')->group(function(){
+        // 1. Riwayat Booking
+        Route::get('/riwayat-booking', [CustomerTransaksiController::class, 'riwayatBooking'])
+            ->name('riwayat.booking');
+
+        // 2. Batalkan Booking (Hanya jika status pending)
+        Route::post('/booking/cancel/{id}', [CustomerTransaksiController::class, 'cancelBooking'])
+            ->name('booking.cancel');
+
+        // 3. Riwayat Pembayaran (Lihat Status)
+        Route::get('/riwayat-pembayaran', [CustomerTransaksiController::class, 'riwayatPembayaran'])
+            ->name('riwayat.pembayaran');
+
+        // 4. Update Bukti Pembayaran (Fitur Upload Ulang jika Ditolak) - INI YANG BARU
+        Route::post('/pembayaran/update-bukti/{id}', [CustomerTransaksiController::class, 'updateBuktiPembayaran'])
+            ->name('pembayaran.updateBukti');
+    });
 
     Route::get('tampilanBookingCustomer', [bookingController::class, 'index'])->name('tampilanBookingCustomer');
 
