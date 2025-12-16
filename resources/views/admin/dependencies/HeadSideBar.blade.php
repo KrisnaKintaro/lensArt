@@ -195,7 +195,7 @@
 
                 <li class="nav-item">
                     <a href="{{ route('kelolaAkunCustomer') }}"
-                        class="nav-link {{ Route::is('kelolaAkunCustomer.*') ? 'active' : '' }}">
+                        class="nav-link {{ Route::is('kelolaAkunCustomer') || Route::is('kelolaAkunCustomer.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users-cog"></i>
                         <p>
                             Kelola Akun Customer
