@@ -36,6 +36,7 @@ class bookingController extends Controller
             'slotJadwal.paketLayanan',
             'user'
         ])
+            ->where('statusPemesanan', '!=', 'dibatalkan')
             ->whereHas('slotJadwal', function ($query) use ($start, $end) {
                 $query->whereDate('tanggal', '>=', $start)
                     ->whereDate('tanggal', '<=', $end)
@@ -92,11 +93,13 @@ class bookingController extends Controller
         $totalJamSehari = 24.0;
 
         // Hitung total jam terisi per tanggal
-        $durasiTerisiHarian = Pemesanan::whereHas('slotJadwal', function ($query) use ($start, $end) {
-            $query->whereDate('tanggal', '>=', $start)
-                ->whereDate('tanggal', '<=', $end)
-                ->where('status', 'terpesan');
-        })
+        $durasiTerisiHarian = Pemesanan::query()
+            ->where('statusPemesanan', '!=', 'dibatalkan')
+            ->whereHas('slotJadwal', function ($query) use ($start, $end) {
+                $query->whereDate('tanggal', '>=', $start)
+                    ->whereDate('tanggal', '<=', $end)
+                    ->where('status', 'terpesan');
+            })
             ->join('slotJadwal', 'pemesanan.idSlotJadwal', '=', 'slotJadwal.idSlotJadwal')
             ->select(
                 'slotJadwal.tanggal',
@@ -113,11 +116,11 @@ class bookingController extends Controller
             $persentase = ($totalJam / $totalJamSehari) * 100;
 
             $className = '';
-            // 60% - 100%
-            if ($persentase > 60) {
+            // 80% - 100%
+            if ($persentase > 80) {
                 $className = 'day-high';
                 // 20% - 60%
-            } elseif ($persentase > 20) {
+            } elseif ($persentase > 30) {
                 $className = 'day-med';
                 // 0% - 20%
             } else {

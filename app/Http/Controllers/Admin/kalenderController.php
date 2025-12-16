@@ -7,7 +7,7 @@ use App\Models\Pemesanan;
 use App\Models\SlotJadwal;
 use App\Models\jenisLayanan;
 use App\Models\PaketLayanan;
-use App\Models\Pembayaran; 
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +37,7 @@ class kalenderController extends Controller
             'slotJadwal.paketLayanan',
             'user'
         ])
+            ->where('statusPemesanan', '!=', 'dibatalkan')
             ->whereHas('slotJadwal', function ($query) use ($start, $end) {
                 $query->whereDate('tanggal', '>=', $start)
                     ->whereDate('tanggal', '<=', $end)
@@ -55,7 +56,7 @@ class kalenderController extends Controller
             // Untuk tampilan admin
             $eventKalender[] = [
                 'id'        => $slotJadwal->idSlotJadwal,
-                'title'     => $slotJadwal->jenisLayanan->namaLayanan . ' - ' . $slotJadwal->paketLayanan->namaPaket .' | Lokasi : ' .$dp->lokasiAcara,
+                'title'     => $slotJadwal->jenisLayanan->namaLayanan . ' - ' . $slotJadwal->paketLayanan->namaPaket . ' | Lokasi : ' . $dp->lokasiAcara,
                 'start'     => $startDateTime,
                 'end'       => $endDateTime,
                 'color'     => '#D32F2F',
@@ -75,11 +76,13 @@ class kalenderController extends Controller
         $end = $request->end;
         $totalJamSehari = 24.0;
 
-        $durasiTerisiHarian = Pemesanan::whereHas('slotJadwal', function ($query) use ($start, $end) {
-            $query->whereDate('tanggal', '>=', $start)
-                ->whereDate('tanggal', '<=', $end)
-                ->where('status', 'terpesan');
-        })
+        $durasiTerisiHarian = Pemesanan::query()
+            ->where('statusPemesanan', '!=', 'dibatalkan')
+            ->whereHas('slotJadwal', function ($query) use ($start, $end) {
+                $query->whereDate('tanggal', '>=', $start)
+                    ->whereDate('tanggal', '<=', $end)
+                    ->where('status', 'terpesan');
+            })
             ->join('slotJadwal', 'pemesanan.idSlotJadwal', '=', 'slotJadwal.idSlotJadwal')
             ->select(
                 'slotJadwal.tanggal',
@@ -96,9 +99,9 @@ class kalenderController extends Controller
             $persentase = ($totalJam / $totalJamSehari) * 100;
 
             $className = '';
-            if ($persentase > 60) {
+            if ($persentase > 80) {
                 $className = 'day-high';
-            } elseif ($persentase > 20) {
+            } elseif ($persentase > 30) {
                 $className = 'day-med';
             } else {
                 $className = 'day-low';
@@ -175,7 +178,6 @@ class kalenderController extends Controller
 
             DB::commit();
             return response()->json(['message' => 'Booking berhasil disimpan!']);
-
         } catch (\Exception $e) {
             DB::rollBack();
             // Hapus file gambar kalau gagal simpan di database
